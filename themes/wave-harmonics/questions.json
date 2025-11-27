@@ -1,0 +1,255 @@
+{
+  "answerPools": {
+    "pool_1": {
+      "name": "美術史學派選項池",
+      "type": "text",
+      "category": "美術史學派",
+      "items": [
+        {
+          "id": "A1",
+          "content": "形式主義（Formalism）"
+        },
+        {
+          "id": "A2",
+          "content": "圖像學（Iconography）"
+        },
+        {
+          "id": "A3",
+          "content": "圖像詮釋學（Iconology）"
+        },
+        {
+          "id": "A4",
+          "content": "風格分析（Stylistic Analysis）"
+        },
+        {
+          "id": "A5",
+          "content": "社會藝術史（Social Art History）"
+        },
+        {
+          "id": "A6",
+          "content": "女性主義藝術史（Feminist Art History）"
+        },
+        {
+          "id": "A7",
+          "content": "精神分析取向（Psychoanalytic Approach）"
+        },
+        {
+          "id": "A8",
+          "content": "馬克思主義藝術史（Marxist Art History）"
+        },
+        {
+          "id": "A9",
+          "content": "結構主義（Structuralism）"
+        },
+        {
+          "id": "A10",
+          "content": "後結構主義（Post-Structuralism）"
+        },
+        {
+          "id": "A11",
+          "content": "形式與內容整合觀（Integrated Form-Content Approach）"
+        },
+        {
+          "id": "A12",
+          "content": "接受美學（Reception Theory）"
+        }
+      ]
+    }
+  },
+  "questionSets": {
+    "set_1": {
+      "name": "美術史學派題庫（中等）",
+      "answerPoolIds": [
+        "pool_1"
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "text",
+          "content": "哪一種學派最重視藝術作品本身的線條、形狀、色彩等視覺元素？",
+          "correctAnswer": "A1"
+        },
+        {
+          "id": "q2",
+          "type": "text",
+          "content": "哪一種方法重點在分析作品中的象徵符號，如宗教人物或寓意？",
+          "correctAnswer": "A2"
+        },
+        {
+          "id": "q3",
+          "type": "text",
+          "content": "哪一種方法會進一步解釋圖像背後的文化與思想脈絡？",
+          "correctAnswer": "A3"
+        },
+        {
+          "id": "q4",
+          "type": "text",
+          "content": "若研究者想比對不同時期作品的變化以判定作者或時代，應使用哪種方法？",
+          "correctAnswer": "A4"
+        },
+        {
+          "id": "q5",
+          "type": "text",
+          "content": "哪一種取向會分析藝術與社會階級、經濟制度的關係？",
+          "correctAnswer": "A8"
+        },
+        {
+          "id": "q6",
+          "type": "text",
+          "content": "研究女性在藝術史中的地位與被忽略現象屬於哪一種學派？",
+          "correctAnswer": "A6"
+        },
+        {
+          "id": "q7",
+          "type": "text",
+          "content": "若研究者從潛意識、象徵欲望等角度解讀藝術，屬於哪一種方法？",
+          "correctAnswer": "A7"
+        },
+        {
+          "id": "q8",
+          "type": "text",
+          "content": "強調文化權力、意識形態如何形塑藝術創作的是哪一學派？",
+          "correctAnswer": "A8"
+        },
+        {
+          "id": "q9",
+          "type": "text",
+          "content": "哪種理論關心觀眾如何接受並理解作品，而非作品本身？",
+          "correctAnswer": "A12"
+        },
+        {
+          "id": "q10",
+          "type": "text",
+          "content": "若研究者試圖找出作品中深層的文化系統與結構，屬於哪一方法？",
+          "correctAnswer": "A9"
+        },
+        {
+          "id": "q11",
+          "type": "text",
+          "content": "哪種方法主張意義是不穩定的，依語境而改變？",
+          "correctAnswer": "A10"
+        },
+        {
+          "id": "q12",
+          "type": "text",
+          "content": "若研究者同時考量作品的形式與主題內容，屬於哪一種取向？",
+          "correctAnswer": "A11"
+        },
+        {
+          "id": "q13",
+          "type": "text",
+          "content": "哪一學派常用於分析文藝復興宗教繪畫中的象徵物？",
+          "correctAnswer": "A2"
+        },
+        {
+          "id": "q14",
+          "type": "text",
+          "content": "哪一種方法在藝術史中常用以分析藝術家的心理狀態？",
+          "correctAnswer": "A7"
+        },
+        {
+          "id": "q15",
+          "type": "text",
+          "content": "若研究者著重於作品的社會背景與生產條件，屬於哪一學派？",
+          "correctAnswer": "A5"
+        },
+        {
+          "id": "q16",
+          "type": "text",
+          "content": "以形式元素分析畫風，並判定作品真偽的方法稱作什麼？",
+          "correctAnswer": "A4"
+        },
+        {
+          "id": "q17",
+          "type": "text",
+          "content": "哪一學派最關心作品在觀眾身上產生的效果與理解過程？",
+          "correctAnswer": "A12"
+        },
+        {
+          "id": "q18",
+          "type": "text",
+          "content": "表現主義作品若以色彩與構圖為主的分析，屬於哪個學派？",
+          "correctAnswer": "A1"
+        },
+        {
+          "id": "q19",
+          "type": "text",
+          "content": "研究者若想理解作品中的文化象徵體系與深層意涵，應採用哪一方法？",
+          "correctAnswer": "A3"
+        },
+        {
+          "id": "q20",
+          "type": "text",
+          "content": "若研究者希望探討語言結構如何影響藝術解讀，應採用哪一學派？",
+          "correctAnswer": "A10"
+        }
+      ]
+    }
+  },
+  "referenceTable": [
+    {
+      "type": "header",
+      "title": "兩端固定"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_1.png",
+      "value": "n=1",
+      "overtone": "基音",
+      "harmonic": "第一諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_2.png",
+      "value": "n=2",
+      "overtone": "第一泛音",
+      "harmonic": "第二諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_3.png",
+      "value": "n=3",
+      "overtone": "第二泛音",
+      "harmonic": "第三諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_4.png",
+      "value": "n=4",
+      "overtone": "第三泛音",
+      "harmonic": "第四諧音"
+    },
+    {
+      "type": "header",
+      "title": "一端固定"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_1.png",
+      "value": "m=1",
+      "overtone": "基音",
+      "harmonic": "第一諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_2.png",
+      "value": "m=3",
+      "overtone": "第一泛音",
+      "harmonic": "第三諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_3.png",
+      "value": "m=5",
+      "overtone": "第二泛音",
+      "harmonic": "第五諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_4.png",
+      "value": "m=7",
+      "overtone": "第三泛音",
+      "harmonic": "第七諧音"
+    }
+  ]
+}
