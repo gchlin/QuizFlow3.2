@@ -1,17 +1,17 @@
 {
 
 "metadata": {
-  "name": "Standing Wave Harmonics",
+  "name": "Standing Wave Harmonics Terms",
   "version": "2.0",
-  "author": "DYSH",
-  "description": "駐波泛音遊戲主題"
+  "author": "chaher@dysh.tyc.edu.tw",
+  "description": "駐波名稱配對遊戲主題"
 },
 
   "meta": {
     "id": "wave-harmonics",
-    "name": "駐波調和大師",
+    "name": "駐波命名大師",
     "version": "2.3",
-    "description": "學習駐波的泛音與諧音對應關係"
+    "description": "學習駐波圖像與泛音諧音的對應關係"
   },
   "messages": {
     "win": [
