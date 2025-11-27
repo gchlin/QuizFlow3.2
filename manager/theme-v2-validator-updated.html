@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme V2 驗證工具（含 Metadata 檢查）</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: "Microsoft JhengHei", "Segoe UI", Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 25px;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .upload-area {
+            border: 3px dashed #667eea;
+            padding: 40px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .upload-area:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+            transform: translateY(-2px);
+        }
+        .upload-area.dragover {
+            background: #e8edff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #ffd93d 0%, #f9ca24 100%);
+            color: #333;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+        .result.warning {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            color: #856404;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .info-item {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #333;
+            font-size: 16px;
+        }
+        .check-item {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .check-item.pass {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .check-item.fail {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .check-item.warn {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .fix-section {
+            background: #fff3cd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 2px solid #ffc107;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .code-block pre {
+            margin: 0;
+        }
+        .metadata-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .highlight {
+            background: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .tab-container {
+            margin-top: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 15px;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Theme V2 驗證工具（含 Metadata 檢查）</h1>
+        
+        <div class="section">
+            <h2>📂 上傳 Theme JSON 檔案</h2>
+            <div class="upload-area" id="uploadArea">
+                <p style="font-size: 48px; margin: 0;">📄</p>
+                <p style="font-size: 18px; margin: 10px 0;">拖曳檔案到這裡</p>
+                <p style="color: #666;">或點擊選擇檔案</p>
+                <p style="font-size: 14px; color: #999;">支援 theme-v2.json</p>
+            </div>
+            <input type="file" id="fileInput" accept=".json">
+        </div>
+
+        <div id="resultArea"></div>
+    </div>
+
+    <script>
+        let currentData = null;
+        let currentFileName = '';
+
+        // 上傳區域處理
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const resultArea = document.getElementById('resultArea');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        // 處理檔案
+        function handleFile(file) {
+            currentFileName = file.name;
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    currentData = data;
+                    validateTheme(data);
+                } catch (error) {
+                    showError('JSON 格式錯誤：' + error.message);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // 驗證主題
+        function validateTheme(data) {
+            const results = {
+                passed: [],
+                failed: [],
+                warnings: []
+            };
+
+            // 檢查 metadata
+            checkMetadata(data, results);
+
+            // 檢查必要欄位
+            checkRequired(data, results);
+
+            // 檢查 colors
+            if (data.colors) {
+                checkColors(data.colors, results);
+            }
+
+            // 檢查 layout
+            if (data.layout) {
+                checkLayout(data.layout, results);
+            }
+
+            // 檢查 messages
+            if (data.messages) {
+                checkMessages(data.messages, results);
+            }
+
+            // 顯示結果
+            displayResults(results, data);
+        }
+
+        // 檢查 metadata（重點！）
+        function checkMetadata(data, results) {
+            if (!data.metadata) {
+                results.warnings.push({
+                    field: 'metadata',
+                    message: '缺少 metadata 欄位',
+                    fix: 'canAutoFix',
+                    severity: 'warning'
+                });
+                return;
+            }
+
+            const meta = data.metadata;
+
+            // 檢查必要子欄位
+            if (!meta.name) {
+                results.warnings.push({
+                    field: 'metadata.name',
+                    message: '建議加上主題名稱',
+                    fix: 'canAutoFix'
+                });
+            } else {
+                results.passed.push({
+                    field: 'metadata.name',
+                    message: `主題名稱：${meta.name}`
+                });
+            }
+
+            if (!meta.version) {
+                results.warnings.push({
+                    field: 'metadata.version',
+                    message: '建議加上版本號',
+                    fix: 'canAutoFix'
+                });
+            } else {
+                results.passed.push({
+                    field: 'metadata.version',
+                    message: `版本：${meta.version}`
+                });
+            }
+
+            if (!meta.author) {
+                results.warnings.push({
+                    field: 'metadata.author',
+                    message: '建議加上作者資訊',
+                    fix: 'canAutoFix'
+                });
+            } else {
+                results.passed.push({
+                    field: 'metadata.author',
+                    message: `作者：${meta.author}`
+                });
+            }
+
+            if (!meta.description) {
+                results.warnings.push({
+                    field: 'metadata.description',
+                    message: '建議加上主題描述',
+                    fix: 'canAutoFix'
+                });
+            } else {
+                results.passed.push({
+                    field: 'metadata.description',
+                    message: `描述：${meta.description}`
+                });
+            }
+        }
+
+        // 檢查必要欄位
+        function checkRequired(data, results) {
+            const required = ['colors', 'layout', 'messages'];
+            
+            required.forEach(field => {
+                if (!data[field]) {
+                    results.failed.push({
+                        field: field,
+                        message: `缺少必要欄位：${field}`,
+                        severity: 'error'
+                    });
+                } else {
+                    results.passed.push({
+                        field: field,
+                        message: `${field} 欄位存在`
+                    });
+                }
+            });
+        }
+
+        // 檢查 colors
+        function checkColors(colors, results) {
+            const requiredColors = ['player1', 'player2', 'background'];
+            
+            requiredColors.forEach(color => {
+                if (!colors[color]) {
+                    results.failed.push({
+                        field: `colors.${color}`,
+                        message: `缺少顏色設定：${color}`
+                    });
+                } else {
+                    results.passed.push({
+                        field: `colors.${color}`,
+                        message: `${color}: ${colors[color]}`
+                    });
+                }
+            });
+        }
+
+        // 檢查 layout
+        function checkLayout(layout, results) {
+            if (layout.optionGrid) {
+                results.passed.push({
+                    field: 'layout.optionGrid',
+                    message: '排版設定存在'
+                });
+            } else {
+                results.warnings.push({
+                    field: 'layout.optionGrid',
+                    message: '建議加上排版設定'
+                });
+            }
+        }
+
+        // 檢查 messages
+        function checkMessages(messages, results) {
+            const requiredMsg = ['win', 'lose'];
+            
+            requiredMsg.forEach(msg => {
+                if (!messages[msg]) {
+                    results.warnings.push({
+                        field: `messages.${msg}`,
+                        message: `建議加上 ${msg} 訊息`
+                    });
+                } else {
+                    results.passed.push({
+                        field: `messages.${msg}`,
+                        message: `${msg} 訊息已設定`
+                    });
+                }
+            });
+        }
+
+        // 顯示結果
+        function displayResults(results, data) {
+            const hasMetadataIssue = results.warnings.some(w => w.field === 'metadata');
+            const hasErrors = results.failed.length > 0;
+            const hasWarnings = results.warnings.length > 0;
+
+            let html = '';
+
+            // 總結
+            if (hasErrors) {
+                html += `<div class="result error" style="display:block;">
+                    <h2>❌ 驗證失敗</h2>
+                    <p>發現 ${results.failed.length} 個錯誤，${results.warnings.length} 個警告</p>
+                </div>`;
+            } else if (hasWarnings) {
+                html += `<div class="result warning" style="display:block;">
+                    <h2>⚠️ 驗證通過（有警告）</h2>
+                    <p>發現 ${results.warnings.length} 個警告</p>
+                </div>`;
+            } else {
+                html += `<div class="result success" style="display:block;">
+                    <h2>✅ 驗證完全通過</h2>
+                    <p>所有檢查項目都通過了！</p>
+                </div>`;
+            }
+
+            // Tab 切換
+            html += `
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab('summary')">📊 摘要</button>
+                        <button class="tab-btn" onclick="switchTab('details')">📋 詳細</button>
+                        ${hasMetadataIssue ? '<button class="tab-btn" onclick="switchTab(\'fix\')">🔧 修復 Metadata</button>' : ''}
+                    </div>
+
+                    <div id="tab-summary" class="tab-content active">
+                        ${generateSummary(results, data)}
+                    </div>
+
+                    <div id="tab-details" class="tab-content">
+                        ${generateDetails(results)}
+                    </div>
+
+                    ${hasMetadataIssue ? `
+                    <div id="tab-fix" class="tab-content">
+                        ${generateFixSection(data)}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            resultArea.innerHTML = html;
+        }
+
+        // 生成摘要
+        function generateSummary(results, data) {
+            let html = '<div class="section">';
+            
+            html += '<h2>📊 驗證摘要</h2>';
+            html += `<div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">檔案名稱</div>
+                    <div class="info-value">${currentFileName}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">檔案大小</div>
+                    <div class="info-value">${(JSON.stringify(data).length / 1024).toFixed(2)} KB</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">通過項目</div>
+                    <div class="info-value" style="color: #28a745;">${results.passed.length}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">警告項目</div>
+                    <div class="info-value" style="color: #ffc107;">${results.warnings.length}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">錯誤項目</div>
+                    <div class="info-value" style="color: #dc3545;">${results.failed.length}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Metadata</div>
+                    <div class="info-value">${data.metadata ? '✅ 有' : '⚠️ 缺少'}</div>
+                </div>
+            </div>`;
+
+            html += '</div>';
+            return html;
+        }
+
+        // 生成詳細資訊
+        function generateDetails(results) {
+            let html = '<div class="section">';
+
+            // 錯誤
+            if (results.failed.length > 0) {
+                html += '<h2 style="color: #dc3545;">❌ 錯誤</h2>';
+                results.failed.forEach(item => {
+                    html += `<div class="check-item fail">
+                        <span class="icon">❌</span>
+                        <div>
+                            <strong>${item.field}</strong><br>
+                            ${item.message}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            // 警告
+            if (results.warnings.length > 0) {
+                html += '<h2 style="color: #ffc107;">⚠️ 警告</h2>';
+                results.warnings.forEach(item => {
+                    html += `<div class="check-item warn">
+                        <span class="icon">⚠️</span>
+                        <div>
+                            <strong>${item.field}</strong><br>
+                            ${item.message}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            // 通過
+            if (results.passed.length > 0) {
+                html += '<h2 style="color: #28a745;">✅ 通過</h2>';
+                results.passed.forEach(item => {
+                    html += `<div class="check-item pass">
+                        <span class="icon">✅</span>
+                        <div>
+                            <strong>${item.field}</strong><br>
+                            ${item.message}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        // 生成修復區域
+        function generateFixSection(data) {
+            const hasMetadata = data.metadata;
+            
+            let html = `
+                <div class="fix-section">
+                    <h2>🔧 自動修復 Metadata</h2>
+                    <p>填寫下方資訊，系統會自動產生完整的 JSON 檔案</p>
+
+                    <div class="metadata-form">
+                        <div class="form-group">
+                            <label>主題名稱 <span style="color: red;">*</span></label>
+                            <input type="text" id="metaName" placeholder="例如：Standing Wave Harmonics" 
+                                value="${hasMetadata && data.metadata.name ? data.metadata.name : ''}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>版本號 <span style="color: red;">*</span></label>
+                            <input type="text" id="metaVersion" placeholder="例如：2.0" 
+                                value="${hasMetadata && data.metadata.version ? data.metadata.version : '2.0'}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>作者</label>
+                            <input type="text" id="metaAuthor" placeholder="例如：chaher@dysh.tyc.edu.tw" 
+                                value="${hasMetadata && data.metadata.author ? data.metadata.author : ''}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>描述</label>
+                            <textarea id="metaDescription" placeholder="例如：駐波泛音物理教學遊戲主題">${hasMetadata && data.metadata.description ? data.metadata.description : ''}</textarea>
+                        </div>
+
+                        <button class="btn btn-success" onclick="generateFixedJSON()">
+                            ✨ 產生完整 JSON
+                        </button>
+                        <button class="btn btn-warning" onclick="copyMetadataCode()">
+                            📋 只複製 metadata 代碼
+                        </button>
+                    </div>
+
+                    <div id="fixedResult"></div>
+                </div>
+
+                <div class="section">
+                    <h2>📚 手動修復教學</h2>
+                    <p><strong>步驟 1：</strong>打開你的 <span class="highlight">theme-v2.json</span></p>
+                    <p><strong>步驟 2：</strong>在檔案最上面（第一個 <code>{</code> 後面）加入：</p>
+                    
+                    <div class="code-block"><pre>"metadata": {
+  "name": "你的主題名稱",
+  "version": "2.0",
+  "author": "你的名字",
+  "description": "主題描述"
+},</pre></div>
+
+                    <p><strong>步驟 3：</strong>記得後面要有逗號 <code>,</code></p>
+                    <p><strong>步驟 4：</strong>儲存後重新驗證</p>
+                </div>
+            `;
+
+            return html;
+        }
+
+        // 產生修復後的 JSON
+        function generateFixedJSON() {
+            const name = document.getElementById('metaName').value.trim();
+            const version = document.getElementById('metaVersion').value.trim();
+            const author = document.getElementById('metaAuthor').value.trim();
+            const description = document.getElementById('metaDescription').value.trim();
+
+            if (!name || !version) {
+                alert('請填寫主題名稱和版本號！');
+                return;
+            }
+
+            // 建立新的 metadata
+            const metadata = {
+                name: name,
+                version: version
+            };
+
+            if (author) metadata.author = author;
+            if (description) metadata.description = description;
+
+            // 建立完整的 JSON
+            const fixedData = {
+                metadata: metadata,
+                ...currentData
+            };
+
+            // 如果原本就有 metadata，要移除舊的
+            if (currentData.metadata) {
+                delete fixedData.metadata;
+                fixedData.metadata = metadata;
+            }
+
+            const jsonString = JSON.stringify(fixedData, null, 2);
+
+            const resultHTML = `
+                <div style="margin-top: 20px;">
+                    <h3>✅ 完整的 JSON（已修復）</h3>
+                    <div class="code-block"><pre>${escapeHtml(jsonString)}</pre></div>
+                    <button class="btn btn-success" onclick="downloadJSON()">
+                        💾 下載 JSON 檔案
+                    </button>
+                    <button class="btn" onclick="copyToClipboard('${escapeHtml(jsonString).replace(/'/g, "\\'")}')">
+                        📋 複製到剪貼簿
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('fixedResult').innerHTML = resultHTML;
+
+            // 儲存修復後的資料
+            window.fixedData = fixedData;
+        }
+
+        // 只複製 metadata 代碼
+        function copyMetadataCode() {
+            const name = document.getElementById('metaName').value.trim();
+            const version = document.getElementById('metaVersion').value.trim();
+            const author = document.getElementById('metaAuthor').value.trim();
+            const description = document.getElementById('metaDescription').value.trim();
+
+            if (!name || !version) {
+                alert('請填寫主題名稱和版本號！');
+                return;
+            }
+
+            let code = '"metadata": {\n';
+            code += `  "name": "${name}",\n`;
+            code += `  "version": "${version}"`;
+            
+            if (author) code += `,\n  "author": "${author}"`;
+            if (description) code += `,\n  "description": "${description}"`;
+            
+            code += '\n},';
+
+            copyToClipboard(code);
+            alert('✅ Metadata 代碼已複製！\n\n請貼到 theme-v2.json 的最上面');
+        }
+
+        // 下載 JSON
+        function downloadJSON() {
+            if (!window.fixedData) return;
+
+            const blob = new Blob([JSON.stringify(window.fixedData, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName.replace('.json', '-fixed.json');
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ 已下載修復後的檔案！');
+        }
+
+        // 複製到剪貼簿
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        // HTML 轉義
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Tab 切換
+        function switchTab(tabName) {
+            // 隱藏所有 tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 顯示選中的 tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 錯誤顯示
+        function showError(message) {
+            resultArea.innerHTML = `
+                <div class="result error" style="display:block;">
+                    <h2>❌ 錯誤</h2>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
