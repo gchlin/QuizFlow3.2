@@ -559,14 +559,6 @@ class GameEngine {
         return this.questions.questionSets[levelConfig.questionSet];
     }
 
-    // 待續...（下一部分將包含答題處理、計分、音效等）
-}
-
-// 導出
-if (typeof window !== 'undefined') {
-    window.GameEngine = GameEngine;
-}
-
     /**
      * 處理答題
      */
