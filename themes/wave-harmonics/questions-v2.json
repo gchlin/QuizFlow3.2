@@ -1,491 +1,187 @@
 {
   "answerPools": {
-    "overtones": {
-      "name": "泛音名稱",
+    "pool_1": {
+      "name": "美術史學派選項池",
       "type": "text",
-      "category": "overtones",
+      "category": "美術史學派",
       "items": [
-        { "id": "O_0", "content": "基音" },
-        { "id": "O_1", "content": "第一泛音" },
-        { "id": "O_2", "content": "第二泛音" },
-        { "id": "O_3", "content": "第三泛音" },
-        { "id": "O_4", "content": "第四泛音" },
-        { "id": "O_5", "content": "第五泛音" },
-        { "id": "O_6", "content": "第六泛音" }
-      ]
-    },
-    "harmonics": {
-      "name": "諧音名稱",
-      "type": "text",
-      "category": "harmonics",
-      "items": [
-        { "id": "H_1", "content": "第一諧音" },
-        { "id": "H_2", "content": "第二諧音" },
-        { "id": "H_3", "content": "第三諧音" },
-        { "id": "H_4", "content": "第四諧音" },
-        { "id": "H_5", "content": "第五諧音" },
-        { "id": "H_6", "content": "第六諧音" },
-        { "id": "H_7", "content": "第七諧音" },
-        { "id": "H_8", "content": "第八諧音" }
-      ]
-    },
-    "images_fixed_both": {
-      "name": "兩端固定圖片",
-      "type": "image",
-      "category": "images_ff",
-      "items": [
-        { "id": "Img_FF_1", "content": "assets/images/ff_1.png" },
-        { "id": "Img_FF_2", "content": "assets/images/ff_2.png" },
-        { "id": "Img_FF_3", "content": "assets/images/ff_3.png" },
-        { "id": "Img_FF_4", "content": "assets/images/ff_4.png" }
-      ]
-    },
-    "images_fixed_one": {
-      "name": "一端固定圖片",
-      "type": "image",
-      "category": "images_fo",
-      "items": [
-        { "id": "Img_FO_1", "content": "assets/images/fo_1.png" },
-        { "id": "Img_FO_2", "content": "assets/images/fo_2.png" },
-        { "id": "Img_FO_3", "content": "assets/images/fo_3.png" },
-        { "id": "Img_FO_4", "content": "assets/images/fo_4.png" }
+        {
+          "id": "A1",
+          "content": "形式主義（Formalism）"
+        },
+        {
+          "id": "A2",
+          "content": "圖像學（Iconography）"
+        },
+        {
+          "id": "A3",
+          "content": "圖像詮釋學（Iconology）"
+        },
+        {
+          "id": "A4",
+          "content": "風格分析（Stylistic Analysis）"
+        },
+        {
+          "id": "A5",
+          "content": "社會藝術史（Social Art History）"
+        },
+        {
+          "id": "A6",
+          "content": "女性主義藝術史（Feminist Art History）"
+        },
+        {
+          "id": "A7",
+          "content": "精神分析取向（Psychoanalytic Approach）"
+        },
+        {
+          "id": "A8",
+          "content": "馬克思主義藝術史（Marxist Art History）"
+        },
+        {
+          "id": "A9",
+          "content": "結構主義（Structuralism）"
+        },
+        {
+          "id": "A10",
+          "content": "後結構主義（Post-Structuralism）"
+        },
+        {
+          "id": "A11",
+          "content": "形式與內容整合觀（Integrated Form-Content Approach）"
+        },
+        {
+          "id": "A12",
+          "content": "接受美學（Reception Theory）"
+        }
       ]
     }
   },
   "questionSets": {
-    "level1": {
-      "name": "兩端固定（看圖選字）",
-      "answerPoolIds": ["overtones", "harmonics"],
+    "set_1": {
+      "name": "美術史學派題庫（中等）",
+      "answerPoolIds": [
+        "pool_1"
+      ],
       "questions": [
         {
-          "id": "q1_1",
-          "type": "image",
-          "content": "assets/images/ff_1.png",
-          "correctAnswer": "O_0"
-        },
-        {
-          "id": "q1_2",
-          "type": "image",
-          "content": "assets/images/ff_1.png",
-          "correctAnswer": "H_1"
-        },
-        {
-          "id": "q1_3",
-          "type": "image",
-          "content": "assets/images/ff_2.png",
-          "correctAnswer": "O_1"
-        },
-        {
-          "id": "q1_4",
-          "type": "image",
-          "content": "assets/images/ff_2.png",
-          "correctAnswer": "H_2"
-        },
-        {
-          "id": "q1_5",
-          "type": "image",
-          "content": "assets/images/ff_3.png",
-          "correctAnswer": "O_2"
-        },
-        {
-          "id": "q1_6",
-          "type": "image",
-          "content": "assets/images/ff_3.png",
-          "correctAnswer": "H_3"
-        },
-        {
-          "id": "q1_7",
-          "type": "image",
-          "content": "assets/images/ff_4.png",
-          "correctAnswer": "O_3"
-        },
-        {
-          "id": "q1_8",
-          "type": "image",
-          "content": "assets/images/ff_4.png",
-          "correctAnswer": "H_4"
-        }
-      ]
-    },
-    "level2": {
-      "name": "一端固定（看圖選字）",
-      "answerPoolIds": ["overtones", "harmonics"],
-      "questions": [
-        {
-          "id": "q2_1",
-          "type": "image",
-          "content": "assets/images/fo_1.png",
-          "correctAnswer": "O_0"
-        },
-        {
-          "id": "q2_2",
-          "type": "image",
-          "content": "assets/images/fo_1.png",
-          "correctAnswer": "H_1"
-        },
-        {
-          "id": "q2_3",
-          "type": "image",
-          "content": "assets/images/fo_2.png",
-          "correctAnswer": "O_1"
-        },
-        {
-          "id": "q2_4",
-          "type": "image",
-          "content": "assets/images/fo_2.png",
-          "correctAnswer": "H_3"
-        },
-        {
-          "id": "q2_5",
-          "type": "image",
-          "content": "assets/images/fo_3.png",
-          "correctAnswer": "O_2"
-        },
-        {
-          "id": "q2_6",
-          "type": "image",
-          "content": "assets/images/fo_3.png",
-          "correctAnswer": "H_5"
-        },
-        {
-          "id": "q2_7",
-          "type": "image",
-          "content": "assets/images/fo_4.png",
-          "correctAnswer": "O_3"
-        },
-        {
-          "id": "q2_8",
-          "type": "image",
-          "content": "assets/images/fo_4.png",
-          "correctAnswer": "H_7"
-        }
-      ]
-    },
-    "level3": {
-      "name": "混合題目（看圖選字）",
-      "answerPoolIds": ["overtones", "harmonics"],
-      "questions": [
-        {
-          "id": "q3_1",
-          "type": "image",
-          "content": "assets/images/ff_1.png",
-          "correctAnswer": "O_0"
-        },
-        {
-          "id": "q3_2",
-          "type": "image",
-          "content": "assets/images/ff_1.png",
-          "correctAnswer": "H_1"
-        },
-        {
-          "id": "q3_3",
-          "type": "image",
-          "content": "assets/images/ff_2.png",
-          "correctAnswer": "O_1"
-        },
-        {
-          "id": "q3_4",
-          "type": "image",
-          "content": "assets/images/ff_2.png",
-          "correctAnswer": "H_2"
-        },
-        {
-          "id": "q3_5",
-          "type": "image",
-          "content": "assets/images/ff_3.png",
-          "correctAnswer": "O_2"
-        },
-        {
-          "id": "q3_6",
-          "type": "image",
-          "content": "assets/images/ff_3.png",
-          "correctAnswer": "H_3"
-        },
-        {
-          "id": "q3_7",
-          "type": "image",
-          "content": "assets/images/ff_4.png",
-          "correctAnswer": "O_3"
-        },
-        {
-          "id": "q3_8",
-          "type": "image",
-          "content": "assets/images/ff_4.png",
-          "correctAnswer": "H_4"
-        },
-        {
-          "id": "q3_9",
-          "type": "image",
-          "content": "assets/images/fo_1.png",
-          "correctAnswer": "O_0"
-        },
-        {
-          "id": "q3_10",
-          "type": "image",
-          "content": "assets/images/fo_1.png",
-          "correctAnswer": "H_1"
-        },
-        {
-          "id": "q3_11",
-          "type": "image",
-          "content": "assets/images/fo_2.png",
-          "correctAnswer": "O_1"
-        },
-        {
-          "id": "q3_12",
-          "type": "image",
-          "content": "assets/images/fo_2.png",
-          "correctAnswer": "H_3"
-        },
-        {
-          "id": "q3_13",
-          "type": "image",
-          "content": "assets/images/fo_3.png",
-          "correctAnswer": "O_2"
-        },
-        {
-          "id": "q3_14",
-          "type": "image",
-          "content": "assets/images/fo_3.png",
-          "correctAnswer": "H_5"
-        },
-        {
-          "id": "q3_15",
-          "type": "image",
-          "content": "assets/images/fo_4.png",
-          "correctAnswer": "O_3"
-        },
-        {
-          "id": "q3_16",
-          "type": "image",
-          "content": "assets/images/fo_4.png",
-          "correctAnswer": "H_7"
-        }
-      ]
-    },
-    "level4": {
-      "name": "兩端固定（看字選圖）",
-      "answerPoolIds": ["images_fixed_both"],
-      "questions": [
-        {
-          "id": "q4_1",
+          "id": "q1",
           "type": "text",
-          "content": "基音 (兩端固定)",
-          "correctAnswer": "Img_FF_1"
+          "content": "哪一種學派最重視藝術作品本身的線條、形狀、色彩等視覺元素？",
+          "correctAnswer": "A1"
         },
         {
-          "id": "q4_2",
+          "id": "q2",
           "type": "text",
-          "content": "第一泛音 (兩端固定)",
-          "correctAnswer": "Img_FF_2"
+          "content": "哪一種方法重點在分析作品中的象徵符號，如宗教人物或寓意？",
+          "correctAnswer": "A2"
         },
         {
-          "id": "q4_3",
+          "id": "q3",
           "type": "text",
-          "content": "第二泛音 (兩端固定)",
-          "correctAnswer": "Img_FF_3"
+          "content": "哪一種方法會進一步解釋圖像背後的文化與思想脈絡？",
+          "correctAnswer": "A3"
         },
         {
-          "id": "q4_4",
+          "id": "q4",
           "type": "text",
-          "content": "第三泛音 (兩端固定)",
-          "correctAnswer": "Img_FF_4"
+          "content": "若研究者想比對不同時期作品的變化以判定作者或時代，應使用哪種方法？",
+          "correctAnswer": "A4"
         },
         {
-          "id": "q4_5",
+          "id": "q5",
           "type": "text",
-          "content": "第一諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_1"
+          "content": "哪一種取向會分析藝術與社會階級、經濟制度的關係？",
+          "correctAnswer": "A8"
         },
         {
-          "id": "q4_6",
+          "id": "q6",
           "type": "text",
-          "content": "第二諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_2"
+          "content": "研究女性在藝術史中的地位與被忽略現象屬於哪一種學派？",
+          "correctAnswer": "A6"
         },
         {
-          "id": "q4_7",
+          "id": "q7",
           "type": "text",
-          "content": "第三諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_3"
+          "content": "若研究者從潛意識、象徵欲望等角度解讀藝術，屬於哪一種方法？",
+          "correctAnswer": "A7"
         },
         {
-          "id": "q4_8",
+          "id": "q8",
           "type": "text",
-          "content": "第四諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_4"
-        }
-      ]
-    },
-    "level5": {
-      "name": "一端固定（看字選圖）",
-      "answerPoolIds": ["images_fixed_one"],
-      "questions": [
-        {
-          "id": "q5_1",
-          "type": "text",
-          "content": "基音 (一端固定)",
-          "correctAnswer": "Img_FO_1"
+          "content": "強調文化權力、意識形態如何形塑藝術創作的是哪一學派？",
+          "correctAnswer": "A8"
         },
         {
-          "id": "q5_2",
+          "id": "q9",
           "type": "text",
-          "content": "第一泛音 (一端固定)",
-          "correctAnswer": "Img_FO_2"
+          "content": "哪種理論關心觀眾如何接受並理解作品，而非作品本身？",
+          "correctAnswer": "A12"
         },
         {
-          "id": "q5_3",
+          "id": "q10",
           "type": "text",
-          "content": "第二泛音 (一端固定)",
-          "correctAnswer": "Img_FO_3"
+          "content": "若研究者試圖找出作品中深層的文化系統與結構，屬於哪一方法？",
+          "correctAnswer": "A9"
         },
         {
-          "id": "q5_4",
+          "id": "q11",
           "type": "text",
-          "content": "第三泛音 (一端固定)",
-          "correctAnswer": "Img_FO_4"
+          "content": "哪種方法主張意義是不穩定的，依語境而改變？",
+          "correctAnswer": "A10"
         },
         {
-          "id": "q5_5",
+          "id": "q12",
           "type": "text",
-          "content": "第一諧音 (一端固定)",
-          "correctAnswer": "Img_FO_1"
+          "content": "若研究者同時考量作品的形式與主題內容，屬於哪一種取向？",
+          "correctAnswer": "A11"
         },
         {
-          "id": "q5_6",
+          "id": "q13",
           "type": "text",
-          "content": "第三諧音 (一端固定)",
-          "correctAnswer": "Img_FO_2"
+          "content": "哪一學派常用於分析文藝復興宗教繪畫中的象徵物？",
+          "correctAnswer": "A2"
         },
         {
-          "id": "q5_7",
+          "id": "q14",
           "type": "text",
-          "content": "第五諧音 (一端固定)",
-          "correctAnswer": "Img_FO_3"
+          "content": "哪一種方法在藝術史中常用以分析藝術家的心理狀態？",
+          "correctAnswer": "A7"
         },
         {
-          "id": "q5_8",
+          "id": "q15",
           "type": "text",
-          "content": "第七諧音 (一端固定)",
-          "correctAnswer": "Img_FO_4"
-        }
-      ]
-    },
-    "level6": {
-      "name": "混合題目（看字選圖）",
-      "answerPoolIds": ["images_fixed_both", "images_fixed_one"],
-      "questions": [
-        {
-          "id": "q6_1",
-          "type": "text",
-          "content": "基音 (兩端固定)",
-          "correctAnswer": "Img_FF_1",
-          "answerPoolIds": ["images_fixed_both"]
+          "content": "若研究者著重於作品的社會背景與生產條件，屬於哪一學派？",
+          "correctAnswer": "A5"
         },
         {
-          "id": "q6_2",
+          "id": "q16",
           "type": "text",
-          "content": "第一泛音 (兩端固定)",
-          "correctAnswer": "Img_FF_2",
-          "answerPoolIds": ["images_fixed_both"]
+          "content": "以形式元素分析畫風，並判定作品真偽的方法稱作什麼？",
+          "correctAnswer": "A4"
         },
         {
-          "id": "q6_3",
+          "id": "q17",
           "type": "text",
-          "content": "第二泛音 (兩端固定)",
-          "correctAnswer": "Img_FF_3",
-          "answerPoolIds": ["images_fixed_both"]
+          "content": "哪一學派最關心作品在觀眾身上產生的效果與理解過程？",
+          "correctAnswer": "A12"
         },
         {
-          "id": "q6_4",
+          "id": "q18",
           "type": "text",
-          "content": "第三泛音 (兩端固定)",
-          "correctAnswer": "Img_FF_4",
-          "answerPoolIds": ["images_fixed_both"]
+          "content": "表現主義作品若以色彩與構圖為主的分析，屬於哪個學派？",
+          "correctAnswer": "A1"
         },
         {
-          "id": "q6_5",
+          "id": "q19",
           "type": "text",
-          "content": "第一諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_1",
-          "answerPoolIds": ["images_fixed_both"]
+          "content": "研究者若想理解作品中的文化象徵體系與深層意涵，應採用哪一方法？",
+          "correctAnswer": "A3"
         },
         {
-          "id": "q6_6",
+          "id": "q20",
           "type": "text",
-          "content": "第二諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_2",
-          "answerPoolIds": ["images_fixed_both"]
-        },
-        {
-          "id": "q6_7",
-          "type": "text",
-          "content": "第三諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_3",
-          "answerPoolIds": ["images_fixed_both"]
-        },
-        {
-          "id": "q6_8",
-          "type": "text",
-          "content": "第四諧音 (兩端固定)",
-          "correctAnswer": "Img_FF_4",
-          "answerPoolIds": ["images_fixed_both"]
-        },
-        {
-          "id": "q6_9",
-          "type": "text",
-          "content": "基音 (一端固定)",
-          "correctAnswer": "Img_FO_1",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_10",
-          "type": "text",
-          "content": "第一泛音 (一端固定)",
-          "correctAnswer": "Img_FO_2",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_11",
-          "type": "text",
-          "content": "第二泛音 (一端固定)",
-          "correctAnswer": "Img_FO_3",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_12",
-          "type": "text",
-          "content": "第三泛音 (一端固定)",
-          "correctAnswer": "Img_FO_4",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_13",
-          "type": "text",
-          "content": "第一諧音 (一端固定)",
-          "correctAnswer": "Img_FO_1",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_14",
-          "type": "text",
-          "content": "第三諧音 (一端固定)",
-          "correctAnswer": "Img_FO_2",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_15",
-          "type": "text",
-          "content": "第五諧音 (一端固定)",
-          "correctAnswer": "Img_FO_3",
-          "answerPoolIds": ["images_fixed_one"]
-        },
-        {
-          "id": "q6_16",
-          "type": "text",
-          "content": "第七諧音 (一端固定)",
-          "correctAnswer": "Img_FO_4",
-          "answerPoolIds": ["images_fixed_one"]
+          "content": "若研究者希望探討語言結構如何影響藝術解讀，應採用哪一學派？",
+          "correctAnswer": "A10"
         }
       ]
     }
