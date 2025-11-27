@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>題目編輯器 v2.0</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        /* 頂部工具列 */
+        .top-toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            align-items: center;
+        }
+
+        .toolbar-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toolbar-separator {
+            width: 2px;
+            height: 30px;
+            background: #dee2e6;
+            margin: 0 5px;
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #2ecc71; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.85rem;
+        }
+
+        input[type="file"] { display: none; }
+
+        /* 統計卡片 */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+        }
+
+        .stat-card.pools { border-color: #9b59b6; }
+        .stat-card.sets { border-color: #3498db; }
+        .stat-card.questions { border-color: #2ecc71; }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card.pools .stat-number { color: #9b59b6; }
+        .stat-card.sets .stat-number { color: #3498db; }
+        .stat-card.questions .stat-number { color: #2ecc71; }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* 區塊樣式 */
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* 可展開項目 */
+        .collapsible-item {
+            background: white;
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .collapsible-item.pool { border-left: 4px solid #9b59b6; }
+        .collapsible-item.set { border-left: 4px solid #3498db; }
+
+        .item-header {
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            transition: background 0.3s;
+        }
+
+        .item-header:hover {
+            background: #f8f9fa;
+        }
+
+        .item-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+            width: 20px;
+            text-align: center;
+        }
+
+        .collapsible-item.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .item-meta {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .item-status {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .item-content {
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            display: none;
+            background: #fafbfc;
+        }
+
+        .collapsible-item.expanded .item-content {
+            display: block;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .preview-img {
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 4px;
+            border: 2px solid #dee2e6;
+        }
+
+        .path-error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+        }
+
+        /* Modal 樣式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+        }
+
+        .modal-close:hover {
+            color: #e74c3c;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* 表單樣式 */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .form-label .required {
+            color: #e74c3c;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Alert 樣式 */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 5px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Prompt 生成器特殊樣式 */
+        .prompt-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .copy-success {
+            background: #2ecc71;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Badge 樣式 */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .badge-category {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-pool {
+            background: #e8daef;
+            color: #6c3483;
+        }
+
+        /* 圖片上傳區 */
+        .image-upload-zone {
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background: #f8f9fa;
+            margin: 15px 0;
+        }
+
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .image-preview-item {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .image-preview-item input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .top-toolbar {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 題目編輯器 v2.0</h1>
+        <p class="subtitle">圖形化介面，輕鬆管理題庫</p>
+
+        <!-- 頂部工具列 -->
+        <div class="top-toolbar">
+            <div class="toolbar-section">
+                <button class="btn btn-info" onclick="openPromptGenerator()">
+                    🤖 AI Prompt 生成器
+                </button>
+                <button class="btn btn-info" onclick="downloadSampleJSON()">
+                    📥 下載範例 JSON
+                </button>
+            </div>
+
+            <div class="toolbar-separator"></div>
+
+            <div class="toolbar-section">
+                <button class="btn btn-primary" onclick="document.getElementById('loadFile').click()">
+                    📂 載入 JSON
+                </button>
+                <input type="file" id="loadFile" accept=".json">
+                
+                <button class="btn btn-warning" onclick="openBatchImageUpload()">
+                    🖼️ 批量匯入圖片
+                </button>
+            </div>
+
+            <div class="toolbar-separator"></div>
+
+            <div class="toolbar-section">
+                <button class="btn btn-success" onclick="openNewPool()">
+                    ➕ 新增選項池
+                </button>
+                
+                <button class="btn btn-success" onclick="openNewSet()">
+                    ➕ 新增題目集
+                </button>
+                
+                <button class="btn btn-warning" onclick="openMergeAI()">
+                    🤖 合併 AI 題目
+                </button>
+            </div>
+
+            <div class="toolbar-separator"></div>
+
+            <div class="toolbar-section">
+                <button class="btn btn-primary" onclick="exportJSON()">
+                    💾 匯出 JSON
+                </button>
+                
+                <button class="btn btn-danger" onclick="clearAll()">
+                    🗑️ 清空全部
+                </button>
+            </div>
+        </div>
+
+        <!-- 統計卡片 -->
+        <div class="stats hidden" id="stats">
+            <div class="stat-card pools">
+                <div class="stat-number" id="statPools">0</div>
+                <div class="stat-label">選項池</div>
+            </div>
+            <div class="stat-card sets">
+                <div class="stat-number" id="statSets">0</div>
+                <div class="stat-label">題目集</div>
+            </div>
+            <div class="stat-card questions">
+                <div class="stat-number" id="statQuestions">0</div>
+                <div class="stat-label">總題目數</div>
+            </div>
+        </div>
+
+        <!-- 選項池區塊 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">📦 選項池</div>
+                <button class="btn btn-sm btn-success" onclick="openNewPool()">➕ 新增</button>
+            </div>
+            <div id="poolsList" class="empty-state">
+                尚無選項池，點擊「新增選項池」開始
+            </div>
+        </div>
+
+        <!-- 題目集區塊 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">📚 題目集</div>
+                <button class="btn btn-sm btn-success" onclick="openNewSet()">➕ 新增</button>
+            </div>
+            <div id="setsList" class="empty-state">
+                尚無題目集，點擊「新增題目集」開始
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Prompt 生成器 Modal -->
+    <div class="modal" id="promptModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                🤖 AI Prompt 生成器
+                <span class="modal-close" onclick="closeModal('promptModal')">×</span>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 使用說明</strong><br>
+                填寫以下資訊，系統會自動生成包含範例 JSON 的 Prompt，讓 AI 產生符合格式的題庫。
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">情境選擇 <span class="required">*</span></label>
+                <select id="promptScenario" class="form-select" onchange="updatePromptForm()">
+                    <option value="new">創建全新主題</option>
+                    <option value="expand-questions">擴充題目（題目太少）</option>
+                    <option value="expand-pools">擴充選項（選項太少）</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">主題名稱 <span class="required">*</span></label>
+                    <input type="text" id="promptTheme" class="form-input" placeholder="例如：化學元素週期表">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">難度等級</label>
+                    <select id="promptDifficulty" class="form-select">
+                        <option value="easy">簡單</option>
+                        <option value="medium" selected>中等</option>
+                        <option value="hard">困難</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">題目數量</label>
+                    <input type="number" id="promptQuestionCount" class="form-input" value="20" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">每個選項池的選項數</label>
+                    <input type="number" id="promptOptionCount" class="form-input" value="8" min="4">
+                </div>
+            </div>
+
+            <!-- 擴充模式額外欄位 -->
+            <div id="expandFields" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">現有題目集 ID</label>
+                    <input type="text" id="promptExistingSetId" class="form-input" placeholder="例如：level1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">現有選項池 ID</label>
+                    <input type="text" id="promptExistingPoolId" class="form-input" placeholder="例如：elements">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="generatePrompt()">
+                    🎯 生成 Prompt
+                </button>
+                <button class="btn" onclick="closeModal('promptModal')">取消</button>
+            </div>
+
+            <!-- Prompt 輸出區 -->
+            <div id="promptOutputArea" class="hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <strong>生成的 Prompt：</strong>
+                    <button class="btn btn-sm btn-success" onclick="copyPrompt()">
+                        📋 複製 Prompt
+                    </button>
+                </div>
+                <div class="prompt-output" id="promptOutput"></div>
+                
+                <div class="alert alert-info" style="margin-top: 15px;">
+                    <strong>📌 下一步：</strong><br>
+                    1. 複製上方 Prompt<br>
+                    2. 貼給 AI（ChatGPT/Claude）<br>
+                    3. 複製 AI 生成的 JSON<br>
+                    4. 點擊頂部工具列的「🤖 合併 AI 題目」按鈕<br>
+                    5. 貼上 JSON 並合併
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量匯入圖片 Modal -->
+    <div class="modal" id="imageUploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                🖼️ 批量匯入圖片
+                <span class="modal-close" onclick="closeModal('imageUploadModal')">×</span>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 使用說明</strong><br>
+                選擇多張圖片，系統會自動使用檔名（去掉副檔名）作為 ID，你也可以個別修改。
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">ID 命名方式</label>
+                <select id="imageIdMethod" class="form-select" onchange="updateImageIds()">
+                    <option value="filename">使用檔名（去副檔名）</option>
+                    <option value="sequential">使用流水號 (IMG_001, IMG_002...)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">選擇圖片</label>
+                <input type="file" id="batchImageInput" accept="image/*" multiple onchange="previewImages()" style="display: block;">
+            </div>
+
+            <div id="imagePreviewArea" class="hidden">
+                <h4 style="margin: 15px 0;">預覽與 ID 設定：</h4>
+                <div class="image-preview-grid" id="imagePreviewGrid"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="importAsPool()" id="importPoolBtn" disabled>
+                    ➕ 匯入為選項池
+                </button>
+                <button class="btn btn-primary" onclick="importAsQuestions()" id="importQuestionsBtn" disabled>
+                    ➕ 匯入為題目
+                </button>
+                <button class="btn" onclick="closeModal('imageUploadModal')">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 選項池編輯 Modal -->
+    <div class="modal" id="poolModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="poolModalTitle">編輯選項池</span>
+                <span class="modal-close" onclick="closeModal('poolModal')">×</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">池 ID <span class="required">*</span></label>
+                    <input type="text" id="poolId" class="form-input" placeholder="例如: scientists">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">名稱</label>
+                    <input type="text" id="poolName" class="form-input" placeholder="例如: 科學家">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">類型 <span class="required">*</span></label>
+                    <select id="poolType" class="form-select">
+                        <option value="text">text (文字)</option>
+                        <option value="image">image (圖片)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">類別（選用）</label>
+                    <input type="text" id="poolCategory" class="form-input" placeholder="例如: 人名、數值">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">選項列表</label>
+                <table id="poolItemsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">選項 ID</th>
+                            <th style="width: 50%;">內容</th>
+                            <th style="width: 20%;">預覽</th>
+                            <th style="width: 10%;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="poolItemsBody"></tbody>
+                </table>
+                <button class="btn btn-sm btn-success" style="margin-top: 10px;" onclick="addPoolItem()">
+                    ➕ 新增選項
+                </button>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="savePool()">儲存</button>
+                <button class="btn" onclick="closeModal('poolModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 題目集編輯 Modal -->
+    <div class="modal" id="setModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="setModalTitle">編輯題目集</span>
+                <span class="modal-close" onclick="closeModal('setModal')">×</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">題目集 ID <span class="required">*</span></label>
+                    <input type="text" id="setId" class="form-input" placeholder="例如: level1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">名稱</label>
+                    <input type="text" id="setName" class="form-input" placeholder="例如: 第一關">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">預設選項池</label>
+                <div class="checkbox-group" id="setPoolCheckboxes">
+                    <span style="color: #999;">請先創建選項池</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">題目列表</label>
+                <table id="setQuestionsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">題目 ID</th>
+                            <th style="width: 15%;">題型</th>
+                            <th style="width: 30%;">內容</th>
+                            <th style="width: 15%;">答案 ID</th>
+                            <th style="width: 15%;">選項池</th>
+                            <th style="width: 10%;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="setQuestionsBody"></tbody>
+                </table>
+                <button class="btn btn-sm btn-success" style="margin-top: 10px;" onclick="addQuestion()">
+                    ➕ 新增題目
+                </button>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveSet()">儲存</button>
+                <button class="btn" onclick="closeModal('setModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 合併 Modal -->
+    <div class="modal" id="mergeAIModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                🤖 合併 AI 生成的題目
+                <span class="modal-close" onclick="closeModal('mergeAIModal')">×</span>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 使用說明</strong><br>
+                1. 將 AI 生成的完整 JSON 貼到下方<br>
+                2. 系統會自動清理格式錯誤<br>
+                3. 分析重複率並顯示建議<br>
+                4. 選擇合併方式
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">AI 生成的 JSON</label>
+                <textarea id="mergeAIInput" class="form-textarea" rows="15" placeholder="貼上 AI 生成的 JSON..."></textarea>
+            </div>
+
+            <div id="mergeAnalysis" class="hidden">
+                <h4 style="margin: 15px 0;">📊 分析結果</h4>
+                <div id="mergeStats"></div>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label class="form-label">處理方式</label>
+                    <select id="mergeMethod" class="form-select">
+                        <option value="new-only">只匯入新內容（推薦）</option>
+                        <option value="overwrite">全部覆蓋（舊的會被取代）</option>
+                        <option value="ask">逐一詢問</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="analyzeAIJSON()">
+                    🔍 分析 JSON
+                </button>
+                <button class="btn btn-success" onclick="executeMerge()" id="executeMergeBtn" disabled>
+                    ✅ 執行合併
+                </button>
+                <button class="btn" onclick="closeModal('mergeAIModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 內建簡單驗證器 ==========
+        function validatePool(pool) {
+            const errors = [];
+            
+            if (!pool.type || !['text', 'image'].includes(pool.type)) {
+                errors.push('類型必須是 text 或 image');
+            }
+            
+            if (!pool.items || pool.items.length < 2) {
+                errors.push('至少需要 2 個選項（建議 4 個以上）');
+            }
+            
+            if (pool.items) {
+                // 檢查 ID 重複
+                const ids = pool.items.map(i => i.id);
+                const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+                if (duplicates.length > 0) {
+                    errors.push('選項 ID 重複：' + [...new Set(duplicates)].join(', '));
+                }
+                
+                // 檢查空白內容
+                const emptyItems = pool.items.filter(i => !i.id || !i.content);
+                if (emptyItems.length > 0) {
+                    errors.push(`有 ${emptyItems.length} 個選項缺少 ID 或內容`);
+                }
+            }
+            
+            return errors;
+        }
+
+        function validateQuestionSet(set, allPools) {
+            const errors = [];
+            
+            if (!set.questions || set.questions.length === 0) {
+                errors.push('至少需要 1 個題目');
+            }
+            
+            if (set.questions) {
+                set.questions.forEach((q, idx) => {
+                    if (!q.id) {
+                        errors.push(`題目 #${idx + 1} 缺少 ID`);
+                    }
+                    
+                    if (!q.content) {
+                        errors.push(`題目 ${q.id || '#' + (idx + 1)} 缺少內容`);
+                    }
+                    
+                    if (!q.correctAnswer) {
+                        errors.push(`題目 ${q.id || '#' + (idx + 1)} 缺少正確答案`);
+                    }
+                    
+                    // 檢查答案是否存在於選項池（簡化版）
+                    const poolIds = q.answerPoolIds || set.answerPoolIds || [];
+                    if (poolIds.length > 0 && q.correctAnswer) {
+                        let answerFound = false;
+                        for (const poolId of poolIds) {
+                            const pool = allPools[poolId];
+                            if (pool && pool.items) {
+                                if (pool.items.find(item => item.id === q.correctAnswer)) {
+                                    answerFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!answerFound) {
+                            errors.push(`題目 ${q.id}: 答案「${q.correctAnswer}」不在選項池中`);
+                        }
+                    }
+                });
+                
+                // 檢查題目 ID 重複
+                const qIds = set.questions.map(q => q.id).filter(id => id);
+                const duplicates = qIds.filter((id, index) => qIds.indexOf(id) !== index);
+                if (duplicates.length > 0) {
+                    errors.push('題目 ID 重複：' + [...new Set(duplicates)].join(', '));
+                }
+            }
+            
+            return errors;
+        }
+
+        // ========== 主程式 ==========
+        let data = {
+            answerPools: {},
+            questionSets: {}
+        };
+
+        let currentEditPool = null;
+        let currentEditSet = null;
+        let imageDataMap = new Map(); // 存儲圖片的 base64 數據
+
+        // 初始化
+        document.getElementById('loadFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    data = JSON.parse(e.target.result);
+                    render();
+                    alert('✅ 載入成功！');
+                } catch (err) {
+                    alert('❌ 載入失敗: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function render() {
+            renderPools();
+            renderSets();
+            updateStats();
+        }
+
+        function updateStats() {
+            const poolCount = Object.keys(data.answerPools).length;
+            const setCount = Object.keys(data.questionSets).length;
+            let questionCount = 0;
+            
+            for (const set of Object.values(data.questionSets)) {
+                if (set.questions) questionCount += set.questions.length;
+            }
+
+            document.getElementById('statPools').textContent = poolCount;
+            document.getElementById('statSets').textContent = setCount;
+            document.getElementById('statQuestions').textContent = questionCount;
+            
+            if (poolCount > 0 || setCount > 0) {
+                document.getElementById('stats').classList.remove('hidden');
+            }
+        }
+
+        function renderPools() {
+            const container = document.getElementById('poolsList');
+            
+            if (Object.keys(data.answerPools).length === 0) {
+                container.innerHTML = '<div class="empty-state">尚無選項池，點擊「新增選項池」開始</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            for (const [id, pool] of Object.entries(data.answerPools)) {
+                const itemCount = pool.items?.length || 0;
+                const status = itemCount < 4 ? 'warning' : 'ok';
+                const statusText = itemCount < 4 ? '⚠️ 選項不足' : '✅ 無問題';
+
+                const item = document.createElement('div');
+                item.className = 'collapsible-item pool';
+                item.innerHTML = `
+                    <div class="item-header" onclick="toggleItem(this)">
+                        <div class="item-header-left">
+                            <div class="expand-icon">▶</div>
+                            <div>
+                                <div class="item-title">
+                                    <code>${id}</code> - ${pool.name || '(無名稱)'}
+                                    ${pool.category ? `<span class="badge badge-category">${pool.category}</span>` : ''}
+                                </div>
+                                <div class="item-meta">
+                                    類型: ${pool.type} | ${itemCount} 個選項
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;" onclick="event.stopPropagation()">
+                            <span class="item-status status-${status}">${statusText}</span>
+                            <div class="item-actions">
+                                <button class="btn btn-sm btn-primary" onclick="editPool('${id}')">編輯</button>
+                                <button class="btn btn-sm btn-danger" onclick="deletePool('${id}')">刪除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-content">
+                        ${renderPoolTable(pool)}
+                    </div>
+                `;
+                container.appendChild(item);
+            }
+        }
+
+        function renderPoolTable(pool) {
+            if (!pool.items || pool.items.length === 0) {
+                return '<p style="color: #999;">無選項</p>';
+            }
+
+            let html = '<table><thead><tr><th>ID</th><th>內容</th><th>預覽</th><th>狀態</th></tr></thead><tbody>';
+            
+            for (const item of pool.items) {
+                const preview = pool.type === 'image' ? 
+                    `<img src="${item.content}" class="preview-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                     <span class="path-error" style="display:none;">❌ 圖片載入失敗</span>` :
+                    '-';
+                
+                html += `
+                    <tr>
+                        <td><code>${item.id}</code></td>
+                        <td>${truncate(item.content, 50)}</td>
+                        <td>${preview}</td>
+                        <td><span class="status-ok">✅</span></td>
+                    </tr>
+                `;
+            }
+            
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function renderSets() {
+            const container = document.getElementById('setsList');
+            
+            if (Object.keys(data.questionSets).length === 0) {
+                container.innerHTML = '<div class="empty-state">尚無題目集，點擊「新增題目集」開始</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            for (const [id, set] of Object.entries(data.questionSets)) {
+                const questionCount = set.questions?.length || 0;
+                const poolIds = set.answerPoolIds?.join(', ') || '(無)';
+
+                const item = document.createElement('div');
+                item.className = 'collapsible-item set';
+                item.innerHTML = `
+                    <div class="item-header" onclick="toggleItem(this)">
+                        <div class="item-header-left">
+                            <div class="expand-icon">▶</div>
+                            <div>
+                                <div class="item-title">
+                                    <code>${id}</code> - ${set.name || '(無名稱)'}
+                                </div>
+                                <div class="item-meta">
+                                    ${questionCount} 題 | 選項池: ${poolIds}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;" onclick="event.stopPropagation()">
+                            <span class="item-status status-ok">✅ 無問題</span>
+                            <div class="item-actions">
+                                <button class="btn btn-sm btn-primary" onclick="editSet('${id}')">編輯</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteSet('${id}')">刪除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-content">
+                        ${renderSetTable(set)}
+                    </div>
+                `;
+                container.appendChild(item);
+            }
+        }
+
+        function renderSetTable(set) {
+            if (!set.questions || set.questions.length === 0) {
+                return '<p style="color: #999;">無題目</p>';
+            }
+
+            let html = '<table><thead><tr><th>ID</th><th>題型</th><th>內容</th><th>答案</th><th>選項池</th><th>狀態</th></tr></thead><tbody>';
+            
+            for (const q of set.questions) {
+                const poolIds = q.answerPoolIds?.map(p => `<span class="badge badge-pool">${p}</span>`).join(' ') || '-';
+                
+                html += `
+                    <tr>
+                        <td><code>${q.id}</code></td>
+                        <td>${q.type === 'image' ? '圖片' : '文字'}</td>
+                        <td>${truncate(q.content, 30)}</td>
+                        <td><code>${q.correctAnswer}</code></td>
+                        <td>${poolIds}</td>
+                        <td><span class="status-ok">✅</span></td>
+                    </tr>
+                `;
+            }
+            
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function toggleItem(header) {
+            const item = header.closest('.collapsible-item');
+            item.classList.toggle('expanded');
+        }
+
+        function truncate(str, length) {
+            if (!str) return '-';
+            if (str.length <= length) return str;
+            return str.substring(0, length) + '...';
+        }
+
+        // Modal 控制
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // 選項池操作
+        function openNewPool() {
+            currentEditPool = null;
+            document.getElementById('poolModalTitle').textContent = '新增選項池';
+            document.getElementById('poolId').value = '';
+            document.getElementById('poolName').value = '';
+            document.getElementById('poolType').value = 'text';
+            document.getElementById('poolCategory').value = '';
+            document.getElementById('poolItemsBody').innerHTML = '';
+            addPoolItem();
+            addPoolItem();
+            openModal('poolModal');
+        }
+
+        function addPoolItem() {
+            const tbody = document.getElementById('poolItemsBody');
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td><input type="text" class="form-input" placeholder="ID" data-field="id"></td>
+                <td><input type="text" class="form-input" placeholder="內容或路徑" data-field="content"></td>
+                <td>-</td>
+                <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">刪除</button></td>
+            `;
+        }
+
+        function savePool() {
+            const id = document.getElementById('poolId').value.trim();
+            if (!id) {
+                alert('請輸入池 ID');
+                return;
+            }
+
+            const items = [];
+            document.querySelectorAll('#poolItemsBody tr').forEach(row => {
+                const itemId = row.querySelector('[data-field="id"]').value.trim();
+                const content = row.querySelector('[data-field="content"]').value.trim();
+                if (itemId && content) {
+                    items.push({ id: itemId, content: content });
+                }
+            });
+
+            const pool = {
+                name: document.getElementById('poolName').value.trim(),
+                type: document.getElementById('poolType').value,
+                category: document.getElementById('poolCategory').value.trim() || undefined,
+                items: items
+            };
+
+            // 使用內建驗證器
+            const errors = validatePool(pool);
+            if (errors.length > 0) {
+                alert('❌ 發現問題：\n\n' + errors.map((e, i) => `${i + 1}. ${e}`).join('\n') + 
+                      '\n\n💡 提示：儲存後可用「teacher-review-v2.html」做完整驗證');
+                return;
+            }
+
+            if (currentEditPool && currentEditPool !== id) {
+                delete data.answerPools[currentEditPool];
+            }
+
+            data.answerPools[id] = pool;
+
+            closeModal('poolModal');
+            render();
+        }
+
+        function editPool(id) {
+            currentEditPool = id;
+            const pool = data.answerPools[id];
+            
+            document.getElementById('poolModalTitle').textContent = '編輯選項池';
+            document.getElementById('poolId').value = id;
+            document.getElementById('poolName').value = pool.name || '';
+            document.getElementById('poolType').value = pool.type;
+            document.getElementById('poolCategory').value = pool.category || '';
+            
+            const tbody = document.getElementById('poolItemsBody');
+            tbody.innerHTML = '';
+            
+            if (pool.items) {
+                pool.items.forEach(item => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td><input type="text" class="form-input" data-field="id" value="${item.id}"></td>
+                        <td><input type="text" class="form-input" data-field="content" value="${item.content}"></td>
+                        <td>${pool.type === 'image' ? '<img src="'+item.content+'" class="preview-img" onerror="this.src=\'\'">' : '-'}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">刪除</button></td>
+                    `;
+                });
+            }
+            
+            openModal('poolModal');
+        }
+
+        function deletePool(id) {
+            if (confirm(`確定要刪除選項池「${id}」嗎？`)) {
+                delete data.answerPools[id];
+                render();
+            }
+        }
+
+        // 題目集操作
+        function openNewSet() {
+            currentEditSet = null;
+            document.getElementById('setModalTitle').textContent = '新增題目集';
+            document.getElementById('setId').value = '';
+            document.getElementById('setName').value = '';
+            updatePoolCheckboxes();
+            document.getElementById('setQuestionsBody').innerHTML = '';
+            addQuestion();
+            openModal('setModal');
+        }
+
+        function updatePoolCheckboxes(selectedPools = []) {
+            const container = document.getElementById('setPoolCheckboxes');
+            const pools = Object.keys(data.answerPools);
+            
+            if (pools.length === 0) {
+                container.innerHTML = '<span style="color: #999;">請先創建選項池</span>';
+                return;
+            }
+
+            container.innerHTML = '';
+            pools.forEach(poolId => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-label';
+                label.innerHTML = `
+                    <input type="checkbox" value="${poolId}" ${selectedPools.includes(poolId) ? 'checked' : ''}>
+                    <span>${poolId}</span>
+                `;
+                container.appendChild(label);
+            });
+        }
+
+        function addQuestion() {
+            const tbody = document.getElementById('setQuestionsBody');
+            const row = tbody.insertRow();
+            
+            // 建立選項池下拉選單
+            const poolOptions = Object.keys(data.answerPools).map(p => 
+                `<option value="${p}">${p}</option>`
+            ).join('');
+
+            row.innerHTML = `
+                <td><input type="text" class="form-input" placeholder="ID" data-field="id"></td>
+                <td>
+                    <select class="form-select" data-field="questionType">
+                        <option value="single">單選題</option>
+                        <option value="multiple" disabled style="color: #999;">複選題（未來支援）</option>
+                    </select>
+                </td>
+                <td><textarea class="form-textarea" placeholder="內容" data-field="content" rows="2"></textarea></td>
+                <td><input type="text" class="form-input" placeholder="答案ID" data-field="correctAnswer"></td>
+                <td>
+                    <select class="form-select" data-field="pools" multiple size="3">
+                        ${poolOptions || '<option disabled>無選項池</option>'}
+                    </select>
+                </td>
+                <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">刪除</button></td>
+            `;
+        }
+
+        function saveSet() {
+            const id = document.getElementById('setId').value.trim();
+            if (!id) {
+                alert('請輸入題目集 ID');
+                return;
+            }
+
+            // 獲取選中的選項池
+            const selectedPools = Array.from(document.querySelectorAll('#setPoolCheckboxes input:checked'))
+                .map(cb => cb.value);
+
+            const questions = [];
+            document.querySelectorAll('#setQuestionsBody tr').forEach(row => {
+                const qId = row.querySelector('[data-field="id"]').value.trim();
+                const content = row.querySelector('[data-field="content"]').value.trim();
+                const correctAnswer = row.querySelector('[data-field="correctAnswer"]').value.trim();
+                const poolSelect = row.querySelector('[data-field="pools"]');
+                const selectedQuestionPools = Array.from(poolSelect.selectedOptions).map(opt => opt.value);
+
+                if (qId && content && correctAnswer) {
+                    const question = {
+                        id: qId,
+                        type: 'text', // 目前只支援文字
+                        content: content,
+                        correctAnswer: correctAnswer
+                    };
+
+                    if (selectedQuestionPools.length > 0) {
+                        question.answerPoolIds = selectedQuestionPools;
+                    }
+
+                    questions.push(question);
+                }
+            });
+
+            const set = {
+                name: document.getElementById('setName').value.trim(),
+                answerPoolIds: selectedPools,
+                questions: questions
+            };
+
+            // 使用內建驗證器
+            const errors = validateQuestionSet(set, data.answerPools);
+            if (errors.length > 0) {
+                alert('❌ 發現問題：\n\n' + errors.map((e, i) => `${i + 1}. ${e}`).join('\n') + 
+                      '\n\n💡 提示：儲存後可用「teacher-review-v2.html」做完整驗證');
+                return;
+            }
+
+            if (currentEditSet && currentEditSet !== id) {
+                delete data.questionSets[currentEditSet];
+            }
+
+            data.questionSets[id] = set;
+
+            closeModal('setModal');
+            render();
+        }
+
+        function editSet(id) {
+            currentEditSet = id;
+            const set = data.questionSets[id];
+            
+            document.getElementById('setModalTitle').textContent = '編輯題目集';
+            document.getElementById('setId').value = id;
+            document.getElementById('setName').value = set.name || '';
+            updatePoolCheckboxes(set.answerPoolIds || []);
+            
+            const tbody = document.getElementById('setQuestionsBody');
+            tbody.innerHTML = '';
+            
+            if (set.questions) {
+                set.questions.forEach(q => {
+                    const poolOptions = Object.keys(data.answerPools).map(p => {
+                        const selected = q.answerPoolIds?.includes(p) ? 'selected' : '';
+                        return `<option value="${p}" ${selected}>${p}</option>`;
+                    }).join('');
+
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td><input type="text" class="form-input" data-field="id" value="${q.id}"></td>
+                        <td>
+                            <select class="form-select" data-field="questionType">
+                                <option value="single">單選題</option>
+                                <option value="multiple" disabled style="color: #999;">複選題（未來支援）</option>
+                            </select>
+                        </td>
+                        <td><textarea class="form-textarea" data-field="content" rows="2">${q.content}</textarea></td>
+                        <td><input type="text" class="form-input" data-field="correctAnswer" value="${q.correctAnswer}"></td>
+                        <td>
+                            <select class="form-select" data-field="pools" multiple size="3">
+                                ${poolOptions}
+                            </select>
+                        </td>
+                        <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">刪除</button></td>
+                    `;
+                });
+            }
+            
+            openModal('setModal');
+        }
+
+        function deleteSet(id) {
+            if (confirm(`確定要刪除題目集「${id}」嗎？`)) {
+                delete data.questionSets[id];
+                render();
+            }
+        }
+
+        // AI Prompt 生成器
+        function openPromptGenerator() {
+            updatePromptForm();
+            openModal('promptModal');
+        }
+
+        function updatePromptForm() {
+            const scenario = document.getElementById('promptScenario').value;
+            const expandFields = document.getElementById('expandFields');
+            
+            if (scenario === 'new') {
+                expandFields.classList.add('hidden');
+            } else {
+                expandFields.classList.remove('hidden');
+            }
+
+            document.getElementById('promptOutputArea').classList.add('hidden');
+        }
+
+        function generatePrompt() {
+            const scenario = document.getElementById('promptScenario').value;
+            const theme = document.getElementById('promptTheme').value.trim();
+            const difficulty = document.getElementById('promptDifficulty').value;
+            const questionCount = document.getElementById('promptQuestionCount').value;
+            const optionCount = document.getElementById('promptOptionCount').value;
+
+            if (!theme) {
+                alert('請輸入主題名稱');
+                return;
+            }
+
+            let prompt = '';
+            const exampleJSON = getExampleJSON();
+
+            if (scenario === 'new') {
+                prompt = `請幫我生成一個「${theme}」的題庫，要求如下：
+
+【基本設定】
+- 難度：${difficulty === 'easy' ? '簡單' : difficulty === 'medium' ? '中等' : '困難'}
+- 題目數量：${questionCount} 題
+- 每個選項池至少 ${optionCount} 個選項
+
+【格式要求 - 非常重要】
+請嚴格按照以下 JSON 格式輸出：
+
+${exampleJSON}
+
+【JSON 格式規則 - 必須遵守】
+1. 使用冒號 ":" 不是等號 "="
+   ✅ 正確: "id": "A1"
+   ❌ 錯誤: "id" = "A1"
+   
+2. 字串用雙引號 " " 不是單引號 ' '
+   ✅ 正確: "content": "選項1"
+   ❌ 錯誤: 'content': '選項1'
+
+3. 不要有註解或說明文字
+   ❌ 錯誤: // 這是註解
+   ❌ 錯誤: /* 這是選項池 */
+
+4. 不要用 Markdown 代碼塊
+   ❌ 錯誤: \`\`\`json
+   ❌ 錯誤: \`\`\`
+
+【內容要求】
+1. 每個選項池的 items 至少要有 ${optionCount} 個選項
+2. 所有題目的 correctAnswer 必須存在於對應的選項池中
+3. 選項 ID 要清楚明確，避免混淆
+4. 確保 JSON 格式完全正確
+
+【輸出格式】
+請直接輸出 JSON，不要有任何其他文字。`;
+
+            } else if (scenario === 'expand-questions') {
+                const existingSetId = document.getElementById('promptExistingSetId').value.trim();
+                
+                prompt = `我有一個「${theme}」的題庫，現在要擴充題目。
+
+【現有題目集 ID】
+${existingSetId || '(請填寫)'}
+
+【新增要求】
+- 新增 ${questionCount} 題
+- 難度：${difficulty === 'easy' ? '簡單' : difficulty === 'medium' ? '中等' : '困難'}
+- 選項池可以使用現有的，也可以新增
+
+【格式要求】
+請只輸出「新增」的部分，格式如下：
+
+${exampleJSON}
+
+【JSON 格式規則 - 必須遵守】
+1. 使用冒號 ":" 不是等號 "="
+2. 字串用雙引號 " " 不是單引號 ' '
+3. 不要有註解、Markdown 標記、或任何說明文字
+4. 直接輸出純 JSON
+
+【注意事項】
+1. 只輸出新增的選項池（如果有）和新增的題目集
+2. 題目集 ID 要與現有的不同（例如：${existingSetId || 'level1'} → ${existingSetId || 'level1'}_new）
+3. 確保 JSON 格式正確`;
+
+            } else if (scenario === 'expand-pools') {
+                const existingPoolId = document.getElementById('promptExistingPoolId').value.trim();
+                
+                prompt = `我有一個「${theme}」的題庫，現在要擴充選項池。
+
+【現有選項池 ID】
+${existingPoolId || '(請填寫)'}
+
+【新增要求】
+- 新增 ${optionCount} 個選項
+
+【格式要求】
+請只輸出選項池部分，使用冒號 ":" 不是等號 "="：
+
+{
+  "answerPools": {
+    "${existingPoolId || 'pool_id'}_new": {
+      "name": "選項池名稱",
+      "type": "text",
+      "items": [
+        { "id": "NEW_1", "content": "新選項 1" },
+        { "id": "NEW_2", "content": "新選項 2" }
+      ]
+    }
+  }
+}
+
+【注意事項】
+1. 新選項的 ID 要與現有的不同
+2. 使用冒號 ":" 不是等號 "="
+3. 不要有 Markdown 標記或註解
+4. 確保 JSON 格式正確`;
+            }
+
+            document.getElementById('promptOutput').textContent = prompt;
+            document.getElementById('promptOutputArea').classList.remove('hidden');
+        }
+
+        function getExampleJSON() {
+            return `{
+  "answerPools": {
+    "pool_1": {
+      "name": "選項池名稱",
+      "type": "text",
+      "category": "類別（選用）",
+      "items": [
+        { "id": "A1", "content": "選項 1" },
+        { "id": "A2", "content": "選項 2" },
+        { "id": "A3", "content": "選項 3" },
+        { "id": "A4", "content": "選項 4" }
+      ]
+    }
+  },
+  "questionSets": {
+    "set_1": {
+      "name": "題目集名稱",
+      "answerPoolIds": ["pool_1"],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "text",
+          "content": "題目內容",
+          "correctAnswer": "A1"
+        }
+      ]
+    }
+  }
+}`;
+        }
+
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ 已複製';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // 批量匯入圖片
+        function openBatchImageUpload() {
+            document.getElementById('imagePreviewArea').classList.add('hidden');
+            document.getElementById('importPoolBtn').disabled = true;
+            document.getElementById('importQuestionsBtn').disabled = true;
+            openModal('imageUploadModal');
+        }
+
+        function previewImages() {
+            const files = document.getElementById('batchImageInput').files;
+            if (files.length === 0) return;
+
+            const grid = document.getElementById('imagePreviewGrid');
+            grid.innerHTML = '';
+            imageDataMap.clear();
+
+            const method = document.getElementById('imageIdMethod').value;
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imgData = e.target.result;
+                    imageDataMap.set(file.name, imgData);
+
+                    const item = document.createElement('div');
+                    item.className = 'image-preview-item';
+                    
+                    const id = method === 'filename' ? 
+                        file.name.replace(/\.[^/.]+$/, '') : 
+                        `IMG_${String(index + 1).padStart(3, '0')}`;
+
+                    item.innerHTML = `
+                        <img src="${imgData}" alt="${file.name}">
+                        <div style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 5px;">${file.name}</div>
+                        <input type="text" value="${id}" placeholder="輸入 ID" data-filename="${file.name}">
+                    `;
+                    grid.appendChild(item);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.getElementById('imagePreviewArea').classList.remove('hidden');
+            document.getElementById('importPoolBtn').disabled = false;
+            document.getElementById('importQuestionsBtn').disabled = false;
+        }
+
+        function updateImageIds() {
+            const files = document.getElementById('batchImageInput').files;
+            if (files.length === 0) return;
+
+            const method = document.getElementById('imageIdMethod').value;
+            const inputs = document.querySelectorAll('#imagePreviewGrid input');
+
+            inputs.forEach((input, index) => {
+                const filename = input.dataset.filename;
+                const id = method === 'filename' ? 
+                    filename.replace(/\.[^/.]+$/, '') : 
+                    `IMG_${String(index + 1).padStart(3, '0')}`;
+                input.value = id;
+            });
+        }
+
+        function importAsPool() {
+            const poolId = prompt('請輸入選項池 ID:', 'images_' + Date.now());
+            if (!poolId) return;
+
+            const items = [];
+            document.querySelectorAll('#imagePreviewGrid .image-preview-item').forEach(item => {
+                const input = item.querySelector('input');
+                const id = input.value.trim();
+                const filename = input.dataset.filename;
+                
+                if (id) {
+                    items.push({
+                        id: id,
+                        content: `img/${filename}` // 假設圖片放在 img/ 目錄
+                    });
+                }
+            });
+
+            if (items.length === 0) {
+                alert('沒有有效的圖片');
+                return;
+            }
+
+            data.answerPools[poolId] = {
+                name: poolId,
+                type: 'image',
+                items: items
+            };
+
+            closeModal('imageUploadModal');
+            render();
+            alert(`✅ 已匯入 ${items.length} 張圖片到選項池「${poolId}」`);
+        }
+
+        function importAsQuestions() {
+            alert('此功能開發中，請先匯入為選項池後，再手動建立題目。');
+        }
+
+        // 其他功能
+        function downloadSampleJSON() {
+            const sample = {
+                answerPools: {
+                    example_pool: {
+                        name: "範例選項池",
+                        type: "text",
+                        category: "範例類別",
+                        items: [
+                            { id: "A1", content: "選項 1" },
+                            { id: "A2", content: "選項 2" },
+                            { id: "A3", content: "選項 3" },
+                            { id: "A4", content: "選項 4" }
+                        ]
+                    }
+                },
+                questionSets: {
+                    example_set: {
+                        name: "範例題目集",
+                        answerPoolIds: ["example_pool"],
+                        questions: [
+                            {
+                                id: "q1",
+                                type: "text",
+                                content: "這是範例題目？",
+                                correctAnswer: "A1"
+                            }
+                        ]
+                    }
+                }
+            };
+
+            const dataStr = JSON.stringify(sample, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'sample_questions.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportJSON() {
+            if (Object.keys(data.answerPools).length === 0 && Object.keys(data.questionSets).length === 0) {
+                alert('沒有可匯出的資料');
+                return;
+            }
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'questions.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearAll() {
+            if (confirm('確定要清空所有資料嗎？此操作無法復原！')) {
+                data = {
+                    answerPools: {},
+                    questionSets: {}
+                };
+                render();
+            }
+        }
+
+        // 初始化
+        render();
+
+        // AI 合併功能
+        let mergeData = null;
+        let mergeAnalysisResult = null;
+
+        function openMergeAI() {
+            document.getElementById('mergeAIInput').value = '';
+            document.getElementById('mergeAnalysis').classList.add('hidden');
+            document.getElementById('executeMergeBtn').disabled = true;
+            openModal('mergeAIModal');
+        }
+
+        function cleanAIJSON(rawText) {
+            let cleaned = rawText;
+            
+            // 移除 Markdown 代碼塊
+            cleaned = cleaned.replace(/```json\s*/g, '');
+            cleaned = cleaned.replace(/```\s*/g, '');
+            
+            // 移除前後的說明文字，只保留 JSON
+            const jsonStart = cleaned.indexOf('{');
+            const jsonEnd = cleaned.lastIndexOf('}');
+            if (jsonStart !== -1 && jsonEnd !== -1) {
+                cleaned = cleaned.substring(jsonStart, jsonEnd + 1);
+            }
+            
+            // 修正常見的 AI 錯誤：使用 = 而非 :
+            // 這是最關鍵的修正
+            cleaned = cleaned.replace(/"([^"]+)"\s*=\s*/g, '"$1": ');
+            
+            // 修正單引號為雙引號
+            cleaned = cleaned.replace(/'([^']*)'/g, '"$1"');
+            
+            // 移除註解
+            cleaned = cleaned.replace(/\/\*[\s\S]*?\*\//g, '');
+            cleaned = cleaned.replace(/\/\/.*/g, '');
+            
+            // 移除多餘的逗號
+            cleaned = cleaned.replace(/,(\s*[}\]])/g, '$1');
+            
+            return cleaned;
+        }
+
+        function analyzeAIJSON() {
+            const rawInput = document.getElementById('mergeAIInput').value.trim();
+            
+            if (!rawInput) {
+                alert('請貼上 AI 生成的 JSON');
+                return;
+            }
+
+            try {
+                // 強力清理
+                const cleaned = cleanAIJSON(rawInput);
+                
+                // 解析
+                mergeData = JSON.parse(cleaned);
+                
+                // 分析重複率
+                const analysis = {
+                    pools: { new: 0, duplicate: 0 },
+                    sets: { new: 0, duplicate: 0 },
+                    questions: { new: 0, duplicate: 0 }
+                };
+
+                // 分析選項池
+                if (mergeData.answerPools) {
+                    for (const poolId in mergeData.answerPools) {
+                        if (data.answerPools[poolId]) {
+                            analysis.pools.duplicate++;
+                        } else {
+                            analysis.pools.new++;
+                        }
+                    }
+                }
+
+                // 分析題目集
+                if (mergeData.questionSets) {
+                    for (const setId in mergeData.questionSets) {
+                        if (data.questionSets[setId]) {
+                            analysis.sets.duplicate++;
+                        } else {
+                            analysis.sets.new++;
+                        }
+                    }
+                }
+
+                mergeAnalysisResult = analysis;
+
+                // 顯示分析結果
+                displayMergeAnalysis(analysis);
+                
+                document.getElementById('executeMergeBtn').disabled = false;
+                
+            } catch (err) {
+                alert('❌ JSON 解析失敗:\n\n' + err.message + '\n\n請檢查 AI 輸出的格式是否正確。\n\n常見問題：\n- 使用了 = 而非 :\n- 使用了單引號而非雙引號\n- 有註解或 Markdown 標記');
+                console.error('原始錯誤:', err);
+                console.error('清理後的文字:', cleanAIJSON(rawInput));
+            }
+        }
+
+        function displayMergeAnalysis(analysis) {
+            const totalPools = analysis.pools.new + analysis.pools.duplicate;
+            const totalSets = analysis.sets.new + analysis.sets.duplicate;
+            const duplicateRate = totalPools > 0 ? 
+                Math.round((analysis.pools.duplicate / totalPools) * 100) : 0;
+
+            let html = '<div class="alert alert-success">';
+            html += '<strong>✅ JSON 解析成功！</strong></div>';
+
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 15px 0;">';
+            
+            html += `
+                <div style="padding: 15px; background: #e8f4f8; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #0c5460;">${totalPools}</div>
+                    <div style="color: #7f8c8d; font-size: 0.9rem;">選項池總數</div>
+                    <div style="color: #2ecc71; font-size: 0.85rem; margin-top: 5px;">新增: ${analysis.pools.new}</div>
+                    <div style="color: #f39c12; font-size: 0.85rem;">重複: ${analysis.pools.duplicate}</div>
+                </div>
+            `;
+
+            html += `
+                <div style="padding: 15px; background: #e8f4f8; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #0c5460;">${totalSets}</div>
+                    <div style="color: #7f8c8d; font-size: 0.9rem;">題目集總數</div>
+                    <div style="color: #2ecc71; font-size: 0.85rem; margin-top: 5px;">新增: ${analysis.sets.new}</div>
+                    <div style="color: #f39c12; font-size: 0.85rem;">重複: ${analysis.sets.duplicate}</div>
+                </div>
+            `;
+
+            html += `
+                <div style="padding: 15px; background: #e8f4f8; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #0c5460;">${duplicateRate}%</div>
+                    <div style="color: #7f8c8d; font-size: 0.9rem;">重複率</div>
+                </div>
+            `;
+
+            html += '</div>';
+
+            if (duplicateRate > 70) {
+                html += '<div class="alert alert-warning">';
+                html += '<strong>⚠️ 重複率過高！</strong><br>';
+                html += '建議選擇「只匯入新內容」，避免覆蓋現有資料。';
+                html += '</div>';
+            }
+
+            document.getElementById('mergeStats').innerHTML = html;
+            document.getElementById('mergeAnalysis').classList.remove('hidden');
+        }
+
+        function executeMerge() {
+            if (!mergeData) {
+                alert('請先分析 JSON');
+                return;
+            }
+
+            const method = document.getElementById('mergeMethod').value;
+            let mergedCount = { pools: 0, sets: 0 };
+            let hasErrors = false;
+
+            if (method === 'new-only') {
+                // 只匯入新的
+                if (mergeData.answerPools) {
+                    for (const [id, pool] of Object.entries(mergeData.answerPools)) {
+                        if (!data.answerPools[id]) {
+                            const errors = validatePool(pool);
+                            if (errors.length > 0) {
+                                console.warn(`選項池 ${id} 有問題:`, errors);
+                                hasErrors = true;
+                            }
+                            data.answerPools[id] = pool;
+                            mergedCount.pools++;
+                        }
+                    }
+                }
+
+                if (mergeData.questionSets) {
+                    for (const [id, set] of Object.entries(mergeData.questionSets)) {
+                        if (!data.questionSets[id]) {
+                            const errors = validateQuestionSet(set, data.answerPools);
+                            if (errors.length > 0) {
+                                console.warn(`題目集 ${id} 有問題:`, errors);
+                                hasErrors = true;
+                            }
+                            data.questionSets[id] = set;
+                            mergedCount.sets++;
+                        }
+                    }
+                }
+
+                closeModal('mergeAIModal');
+                render();
+                
+                let message = `✅ 合併完成！\n\n新增選項池: ${mergedCount.pools}\n新增題目集: ${mergedCount.sets}`;
+                if (hasErrors) {
+                    message += '\n\n⚠️ 部分內容有警告，請用「teacher-review-v2.html」做完整驗證';
+                }
+                alert(message);
+
+            } else if (method === 'overwrite') {
+                if (confirm('⚠️ 確定要全部覆蓋嗎？\n\n重複的選項池和題目集會被新的取代。')) {
+                    if (mergeData.answerPools) {
+                        for (const [id, pool] of Object.entries(mergeData.answerPools)) {
+                            data.answerPools[id] = pool;
+                            mergedCount.pools++;
+                        }
+                    }
+
+                    if (mergeData.questionSets) {
+                        for (const [id, set] of Object.entries(mergeData.questionSets)) {
+                            data.questionSets[id] = set;
+                            mergedCount.sets++;
+                        }
+                    }
+
+                    closeModal('mergeAIModal');
+                    render();
+                    alert(`✅ 覆蓋完成！\n\n處理選項池: ${mergedCount.pools}\n處理題目集: ${mergedCount.sets}\n\n💡 建議用「teacher-review-v2.html」驗證`);
+                }
+
+            } else if (method === 'ask') {
+                // 逐一詢問
+                if (mergeData.answerPools) {
+                    for (const [id, pool] of Object.entries(mergeData.answerPools)) {
+                        if (data.answerPools[id]) {
+                            if (confirm(`選項池「${id}」已存在，要覆蓋嗎？`)) {
+                                data.answerPools[id] = pool;
+                                mergedCount.pools++;
+                            }
+                        } else {
+                            data.answerPools[id] = pool;
+                            mergedCount.pools++;
+                        }
+                    }
+                }
+
+                if (mergeData.questionSets) {
+                    for (const [id, set] of Object.entries(mergeData.questionSets)) {
+                        if (data.questionSets[id]) {
+                            if (confirm(`題目集「${id}」已存在，要覆蓋嗎？`)) {
+                                data.questionSets[id] = set;
+                                mergedCount.sets++;
+                            }
+                        } else {
+                            data.questionSets[id] = set;
+                            mergedCount.sets++;
+                        }
+                    }
+                }
+
+                closeModal('mergeAIModal');
+                render();
+                alert(`✅ 合併完成！\n\n處理選項池: ${mergedCount.pools}\n處理題目集: ${mergedCount.sets}\n\n💡 建議用「teacher-review-v2.html」驗證`);
+            }
+        }
+    </script>
+</body>
+</html>

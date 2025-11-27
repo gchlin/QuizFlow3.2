@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>題庫審題系統 v2.0</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .help-link {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            border-radius: 5px;
+        }
+
+        .help-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .help-link a:hover {
+            text-decoration: underline;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+
+        .upload-section.dragover {
+            border-color: #2ecc71;
+            background: #e8f8f5;
+            transform: scale(1.02);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.total { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .stat-card.valid { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .stat-card.warning { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .stat-card.error { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+
+        section h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-ok {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .status-warning {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .option-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .option-list li {
+            margin: 3px 0;
+        }
+
+        .correct-answer {
+            background: #d4edda;
+            color: #155724;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .wrong-option {
+            color: #721c24;
+        }
+
+        .pool-badge {
+            display: inline-block;
+            background: #e8f4f8;
+            color: #0c5460;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 2px;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .action-bar {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 題庫審題系統 v2.0</h1>
+            <p class="subtitle">表格式呈現，一目了然檢查題目邏輯</p>
+            <div class="help-link">
+                💡 <strong>不懂選項池概念？</strong> 
+                <a href="../TEACHER_GUIDE.md" target="_blank">閱讀教師使用指南</a>
+            </div>
+        </header>
+
+        <!-- 上傳區 -->
+        <div class="upload-section" id="uploadZone">
+            <div style="font-size: 3rem; margin-bottom: 10px;">📤</div>
+            <div style="font-size: 1.2rem; margin-bottom: 10px;">
+                拖曳 <strong>questions.json</strong> 到這裡
+            </div>
+            <div style="color: #7f8c8d; margin-bottom: 15px;">或</div>
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                選擇檔案
+            </button>
+            <input type="file" id="fileInput" accept=".json">
+        </div>
+
+        <!-- 結果區 -->
+        <div id="resultSection" class="hidden">
+            <!-- 統計卡片 -->
+            <div class="stats">
+                <div class="stat-card total">
+                    <div class="number" id="statTotal">0</div>
+                    <div class="label">總題目數</div>
+                </div>
+                <div class="stat-card valid">
+                    <div class="number" id="statValid">0</div>
+                    <div class="label">正確題目</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="number" id="statWarning">0</div>
+                    <div class="label">警告</div>
+                </div>
+                <div class="stat-card error">
+                    <div class="number" id="statError">0</div>
+                    <div class="label">錯誤</div>
+                </div>
+            </div>
+
+            <!-- 整體狀態 -->
+            <div id="overallStatus"></div>
+
+            <!-- 動作列 -->
+            <div class="action-bar">
+                <button class="btn btn-success" onclick="exportCleanedJSON()">
+                    💾 匯出清理後的 JSON
+                </button>
+                <button class="btn btn-primary" onclick="exportReport()">
+                    📄 匯出詳細報告
+                </button>
+            </div>
+
+            <!-- 選項池表格 -->
+            <section>
+                <h2>📦 選項池清單</h2>
+                <table id="poolsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">池 ID</th>
+                            <th style="width: 15%;">名稱</th>
+                            <th style="width: 10%;">類型</th>
+                            <th style="width: 15%;">類別</th>
+                            <th style="width: 10%;">選項數</th>
+                            <th style="width: 35%;">選項內容</th>
+                        </tr>
+                    </thead>
+                    <tbody id="poolsTableBody"></tbody>
+                </table>
+            </section>
+
+            <!-- 題目表格 -->
+            <section>
+                <h2>📝 題目清單</h2>
+                <table id="questionsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">題目 Key</th>
+                            <th style="width: 8%;">類型</th>
+                            <th style="width: 25%;">題目內容</th>
+                            <th style="width: 12%;">正確答案</th>
+                            <th style="width: 20%;">測試錯誤選項</th>
+                            <th style="width: 15%;">選項來源</th>
+                            <th style="width: 10%;">狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questionsTableBody"></tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+
+    <script src="../core/smart-validator.js"></script>
+    <script>
+        let questionData = null;
+        let validator = new SmartValidator();
+        let validationResult = null;
+
+        // 上傳處理
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (!file.name.endsWith('.json')) {
+                alert('請上傳 JSON 檔案');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const rawText = e.target.result;
+                processJSON(rawText);
+            };
+            reader.readAsText(file);
+        }
+
+        function processJSON(rawText) {
+            validationResult = validator.validate(rawText);
+            
+            if (!validationResult.success && validationResult.stage === 'parse') {
+                showError('JSON 解析失敗: ' + validationResult.error);
+                return;
+            }
+
+            questionData = validationResult.data;
+            displayResults();
+        }
+
+        function showError(message) {
+            document.getElementById('resultSection').classList.remove('hidden');
+            document.getElementById('overallStatus').innerHTML = `
+                <div class="alert alert-danger">
+                    <strong>❌ 錯誤</strong><br>${message}
+                </div>
+            `;
+        }
+
+        function displayResults() {
+            const v = validationResult.validation;
+            const stats = v.statistics;
+
+            // 顯示結果區
+            document.getElementById('resultSection').classList.remove('hidden');
+
+            // 更新統計
+            document.getElementById('statTotal').textContent = stats.totalQuestions || 0;
+            document.getElementById('statValid').textContent = stats.validQuestions || 0;
+            document.getElementById('statWarning').textContent = stats.warningQuestions || 0;
+            document.getElementById('statError').textContent = stats.errorQuestions || 0;
+
+            // 顯示整體狀態
+            displayOverallStatus(v);
+
+            // 顯示選項池
+            displayPools();
+
+            // 顯示題目
+            displayQuestions();
+        }
+
+        function displayOverallStatus(v) {
+            let html = '';
+            
+            if (validationResult.cleaningSteps && validationResult.cleaningSteps.length > 0) {
+                html += '<div class="alert alert-info">';
+                html += '<strong>🧹 自動清理完成</strong><ul style="margin: 10px 0; padding-left: 20px;">';
+                validationResult.cleaningSteps.forEach(step => {
+                    html += `<li>${step}</li>`;
+                });
+                html += '</ul></div>';
+            }
+
+            if (v.errors.length === 0) {
+                html += '<div class="alert alert-success">';
+                html += '<strong>✅ 驗證通過！</strong><br>';
+                html += `題庫包含 ${v.statistics.totalQuestions} 題，全部邏輯正確。`;
+                html += '</div>';
+            } else {
+                html += '<div class="alert alert-danger">';
+                html += '<strong>❌ 發現錯誤</strong><br>';
+                html += `共 ${v.errors.length} 個題目有錯誤，請查看下方表格詳情。`;
+                html += '</div>';
+            }
+
+            document.getElementById('overallStatus').innerHTML = html;
+        }
+
+        function displayPools() {
+            const tbody = document.getElementById('poolsTableBody');
+            tbody.innerHTML = '';
+
+            if (!questionData.answerPools) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">沒有選項池資料</td></tr>';
+                return;
+            }
+
+            for (const [poolId, pool] of Object.entries(questionData.answerPools)) {
+                const row = document.createElement('tr');
+                
+                const items = pool.items || [];
+                const itemsHTML = items.map(item => 
+                    `<div style="margin: 2px 0;"><strong>${item.id}:</strong> ${truncate(item.content, 30)}</div>`
+                ).join('');
+
+                row.innerHTML = `
+                    <td><code>${poolId}</code></td>
+                    <td>${pool.name || '-'}</td>
+                    <td>${pool.type || '-'}</td>
+                    <td>${pool.category ? `<span class="category-badge">${pool.category}</span>` : '-'}</td>
+                    <td>${items.length}</td>
+                    <td>${itemsHTML || '-'}</td>
+                `;
+
+                tbody.appendChild(row);
+            }
+        }
+
+        function displayQuestions() {
+            const tbody = document.getElementById('questionsTableBody');
+            tbody.innerHTML = '';
+
+            if (!questionData.questionSets) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">沒有題目資料</td></tr>';
+                return;
+            }
+
+            for (const [setId, set] of Object.entries(questionData.questionSets)) {
+                if (!set.questions) continue;
+
+                set.questions.forEach((q, idx) => {
+                    const row = document.createElement('tr');
+                    
+                    // 檢查這題的狀態
+                    const status = getQuestionStatus(setId, idx, q);
+                    
+                    // 生成測試選項
+                    const testOptions = generateTestOptions(q, set);
+                    
+                    // 選項來源
+                    const poolIds = q.answerPoolIds || set.answerPoolIds || [];
+                    const poolBadges = poolIds.map(pid => 
+                        `<span class="pool-badge">${pid}</span>`
+                    ).join(' ');
+
+                    row.innerHTML = `
+                        <td><code>${q.id || `#${idx + 1}`}</code><br><small style="color: #999;">(${setId})</small></td>
+                        <td>${q.type || '-'}</td>
+                        <td>${truncate(q.content, 100)}</td>
+                        <td><span class="correct-answer">${q.correctAnswer || '-'}</span></td>
+                        <td>${testOptions}</td>
+                        <td>${poolBadges || '-'}</td>
+                        <td>${status}</td>
+                    `;
+
+                    tbody.appendChild(row);
+                });
+            }
+        }
+
+        function getQuestionStatus(setId, idx, q) {
+            const v = validationResult.validation;
+            
+            // 檢查是否有錯誤
+            const error = v.errors.find(e => e.setId === setId && e.index === idx);
+            if (error) {
+                return `<span class="status-error">❌ 錯誤</span>
+                        <div class="error-message">${error.message || error.issues?.map(i => i.message).join('<br>') || '未知錯誤'}</div>`;
+            }
+
+            // 檢查是否有警告
+            const warning = v.warnings.find(w => w.setId === setId && w.index === idx);
+            if (warning) {
+                return `<span class="status-warning">⚠️ 警告</span>
+                        <div class="warning-message">${warning.message || warning.issues?.map(i => i.message).join('<br>') || '未知警告'}</div>`;
+            }
+
+            return '<span class="status-ok">✅ 正確</span>';
+        }
+
+        function generateTestOptions(question, set) {
+            const poolIds = question.answerPoolIds || set.answerPoolIds || [];
+            if (poolIds.length === 0) {
+                return '<span style="color: #999;">無法生成（缺少選項池）</span>';
+            }
+
+            // 收集所有可用選項
+            const allOptions = [];
+            poolIds.forEach(poolId => {
+                const pool = questionData.answerPools[poolId];
+                if (pool && pool.items) {
+                    pool.items.forEach(item => {
+                        if (item.id !== question.correctAnswer) {
+                            allOptions.push(item);
+                        }
+                    });
+                }
+            });
+
+            if (allOptions.length === 0) {
+                return '<span style="color: #999;">無錯誤選項</span>';
+            }
+
+            // 隨機選 3 個
+            const selected = [];
+            const shuffled = [...allOptions].sort(() => Math.random() - 0.5);
+            for (let i = 0; i < Math.min(3, shuffled.length); i++) {
+                selected.push(shuffled[i]);
+            }
+
+            const html = selected.map(opt => 
+                `<div class="wrong-option" style="margin: 3px 0;">• ${opt.id}: ${truncate(opt.content, 25)}</div>`
+            ).join('');
+
+            return html || '-';
+        }
+
+        function truncate(str, length) {
+            if (!str) return '-';
+            if (str.length <= length) return str;
+            return str.substring(0, length) + '...';
+        }
+
+        function exportCleanedJSON() {
+            if (!questionData) {
+                alert('沒有可匯出的資料');
+                return;
+            }
+
+            const dataStr = JSON.stringify(questionData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'questions_cleaned.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportReport() {
+            if (!validationResult) {
+                alert('沒有可匯出的報告');
+                return;
+            }
+
+            const v = validationResult.validation;
+            let report = '=== 題庫驗證詳細報告 ===\n\n';
+            report += `生成時間: ${new Date().toLocaleString()}\n\n`;
+            
+            report += '統計資訊:\n';
+            report += `  總題目數: ${v.statistics.totalQuestions}\n`;
+            report += `  正確題目: ${v.statistics.validQuestions}\n`;
+            report += `  警告: ${v.statistics.warningQuestions}\n`;
+            report += `  錯誤: ${v.statistics.errorQuestions}\n\n`;
+            
+            if (v.errors.length > 0) {
+                report += `錯誤詳情 (${v.errors.length} 項):\n`;
+                v.errors.forEach((err, idx) => {
+                    report += `\n${idx + 1}. ${err.message || err.issues?.map(i => i.message).join('; ')}\n`;
+                });
+            }
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'validation_report.txt';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

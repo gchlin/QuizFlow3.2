@@ -1,0 +1,559 @@
+{
+  "answerPools": {
+    "overtones": {
+      "name": "泛音名稱",
+      "type": "text",
+      "category": "overtones",
+      "items": [
+        { "id": "O_0", "content": "基音" },
+        { "id": "O_1", "content": "第一泛音" },
+        { "id": "O_2", "content": "第二泛音" },
+        { "id": "O_3", "content": "第三泛音" },
+        { "id": "O_4", "content": "第四泛音" },
+        { "id": "O_5", "content": "第五泛音" },
+        { "id": "O_6", "content": "第六泛音" }
+      ]
+    },
+    "harmonics": {
+      "name": "諧音名稱",
+      "type": "text",
+      "category": "harmonics",
+      "items": [
+        { "id": "H_1", "content": "第一諧音" },
+        { "id": "H_2", "content": "第二諧音" },
+        { "id": "H_3", "content": "第三諧音" },
+        { "id": "H_4", "content": "第四諧音" },
+        { "id": "H_5", "content": "第五諧音" },
+        { "id": "H_6", "content": "第六諧音" },
+        { "id": "H_7", "content": "第七諧音" },
+        { "id": "H_8", "content": "第八諧音" }
+      ]
+    },
+    "images_fixed_both": {
+      "name": "兩端固定圖片",
+      "type": "image",
+      "category": "images_ff",
+      "items": [
+        { "id": "Img_FF_1", "content": "assets/images/ff_1.png" },
+        { "id": "Img_FF_2", "content": "assets/images/ff_2.png" },
+        { "id": "Img_FF_3", "content": "assets/images/ff_3.png" },
+        { "id": "Img_FF_4", "content": "assets/images/ff_4.png" }
+      ]
+    },
+    "images_fixed_one": {
+      "name": "一端固定圖片",
+      "type": "image",
+      "category": "images_fo",
+      "items": [
+        { "id": "Img_FO_1", "content": "assets/images/fo_1.png" },
+        { "id": "Img_FO_2", "content": "assets/images/fo_2.png" },
+        { "id": "Img_FO_3", "content": "assets/images/fo_3.png" },
+        { "id": "Img_FO_4", "content": "assets/images/fo_4.png" }
+      ]
+    }
+  },
+  "questionSets": {
+    "level1": {
+      "name": "兩端固定（看圖選字）",
+      "answerPoolIds": ["overtones", "harmonics"],
+      "questions": [
+        {
+          "id": "q1_1",
+          "type": "image",
+          "content": "assets/images/ff_1.png",
+          "correctAnswer": "O_0"
+        },
+        {
+          "id": "q1_2",
+          "type": "image",
+          "content": "assets/images/ff_1.png",
+          "correctAnswer": "H_1"
+        },
+        {
+          "id": "q1_3",
+          "type": "image",
+          "content": "assets/images/ff_2.png",
+          "correctAnswer": "O_1"
+        },
+        {
+          "id": "q1_4",
+          "type": "image",
+          "content": "assets/images/ff_2.png",
+          "correctAnswer": "H_2"
+        },
+        {
+          "id": "q1_5",
+          "type": "image",
+          "content": "assets/images/ff_3.png",
+          "correctAnswer": "O_2"
+        },
+        {
+          "id": "q1_6",
+          "type": "image",
+          "content": "assets/images/ff_3.png",
+          "correctAnswer": "H_3"
+        },
+        {
+          "id": "q1_7",
+          "type": "image",
+          "content": "assets/images/ff_4.png",
+          "correctAnswer": "O_3"
+        },
+        {
+          "id": "q1_8",
+          "type": "image",
+          "content": "assets/images/ff_4.png",
+          "correctAnswer": "H_4"
+        }
+      ]
+    },
+    "level2": {
+      "name": "一端固定（看圖選字）",
+      "answerPoolIds": ["overtones", "harmonics"],
+      "questions": [
+        {
+          "id": "q2_1",
+          "type": "image",
+          "content": "assets/images/fo_1.png",
+          "correctAnswer": "O_0"
+        },
+        {
+          "id": "q2_2",
+          "type": "image",
+          "content": "assets/images/fo_1.png",
+          "correctAnswer": "H_1"
+        },
+        {
+          "id": "q2_3",
+          "type": "image",
+          "content": "assets/images/fo_2.png",
+          "correctAnswer": "O_1"
+        },
+        {
+          "id": "q2_4",
+          "type": "image",
+          "content": "assets/images/fo_2.png",
+          "correctAnswer": "H_3"
+        },
+        {
+          "id": "q2_5",
+          "type": "image",
+          "content": "assets/images/fo_3.png",
+          "correctAnswer": "O_2"
+        },
+        {
+          "id": "q2_6",
+          "type": "image",
+          "content": "assets/images/fo_3.png",
+          "correctAnswer": "H_5"
+        },
+        {
+          "id": "q2_7",
+          "type": "image",
+          "content": "assets/images/fo_4.png",
+          "correctAnswer": "O_3"
+        },
+        {
+          "id": "q2_8",
+          "type": "image",
+          "content": "assets/images/fo_4.png",
+          "correctAnswer": "H_7"
+        }
+      ]
+    },
+    "level3": {
+      "name": "混合題目（看圖選字）",
+      "answerPoolIds": ["overtones", "harmonics"],
+      "questions": [
+        {
+          "id": "q3_1",
+          "type": "image",
+          "content": "assets/images/ff_1.png",
+          "correctAnswer": "O_0"
+        },
+        {
+          "id": "q3_2",
+          "type": "image",
+          "content": "assets/images/ff_1.png",
+          "correctAnswer": "H_1"
+        },
+        {
+          "id": "q3_3",
+          "type": "image",
+          "content": "assets/images/ff_2.png",
+          "correctAnswer": "O_1"
+        },
+        {
+          "id": "q3_4",
+          "type": "image",
+          "content": "assets/images/ff_2.png",
+          "correctAnswer": "H_2"
+        },
+        {
+          "id": "q3_5",
+          "type": "image",
+          "content": "assets/images/ff_3.png",
+          "correctAnswer": "O_2"
+        },
+        {
+          "id": "q3_6",
+          "type": "image",
+          "content": "assets/images/ff_3.png",
+          "correctAnswer": "H_3"
+        },
+        {
+          "id": "q3_7",
+          "type": "image",
+          "content": "assets/images/ff_4.png",
+          "correctAnswer": "O_3"
+        },
+        {
+          "id": "q3_8",
+          "type": "image",
+          "content": "assets/images/ff_4.png",
+          "correctAnswer": "H_4"
+        },
+        {
+          "id": "q3_9",
+          "type": "image",
+          "content": "assets/images/fo_1.png",
+          "correctAnswer": "O_0"
+        },
+        {
+          "id": "q3_10",
+          "type": "image",
+          "content": "assets/images/fo_1.png",
+          "correctAnswer": "H_1"
+        },
+        {
+          "id": "q3_11",
+          "type": "image",
+          "content": "assets/images/fo_2.png",
+          "correctAnswer": "O_1"
+        },
+        {
+          "id": "q3_12",
+          "type": "image",
+          "content": "assets/images/fo_2.png",
+          "correctAnswer": "H_3"
+        },
+        {
+          "id": "q3_13",
+          "type": "image",
+          "content": "assets/images/fo_3.png",
+          "correctAnswer": "O_2"
+        },
+        {
+          "id": "q3_14",
+          "type": "image",
+          "content": "assets/images/fo_3.png",
+          "correctAnswer": "H_5"
+        },
+        {
+          "id": "q3_15",
+          "type": "image",
+          "content": "assets/images/fo_4.png",
+          "correctAnswer": "O_3"
+        },
+        {
+          "id": "q3_16",
+          "type": "image",
+          "content": "assets/images/fo_4.png",
+          "correctAnswer": "H_7"
+        }
+      ]
+    },
+    "level4": {
+      "name": "兩端固定（看字選圖）",
+      "answerPoolIds": ["images_fixed_both"],
+      "questions": [
+        {
+          "id": "q4_1",
+          "type": "text",
+          "content": "基音 (兩端固定)",
+          "correctAnswer": "Img_FF_1"
+        },
+        {
+          "id": "q4_2",
+          "type": "text",
+          "content": "第一泛音 (兩端固定)",
+          "correctAnswer": "Img_FF_2"
+        },
+        {
+          "id": "q4_3",
+          "type": "text",
+          "content": "第二泛音 (兩端固定)",
+          "correctAnswer": "Img_FF_3"
+        },
+        {
+          "id": "q4_4",
+          "type": "text",
+          "content": "第三泛音 (兩端固定)",
+          "correctAnswer": "Img_FF_4"
+        },
+        {
+          "id": "q4_5",
+          "type": "text",
+          "content": "第一諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_1"
+        },
+        {
+          "id": "q4_6",
+          "type": "text",
+          "content": "第二諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_2"
+        },
+        {
+          "id": "q4_7",
+          "type": "text",
+          "content": "第三諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_3"
+        },
+        {
+          "id": "q4_8",
+          "type": "text",
+          "content": "第四諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_4"
+        }
+      ]
+    },
+    "level5": {
+      "name": "一端固定（看字選圖）",
+      "answerPoolIds": ["images_fixed_one"],
+      "questions": [
+        {
+          "id": "q5_1",
+          "type": "text",
+          "content": "基音 (一端固定)",
+          "correctAnswer": "Img_FO_1"
+        },
+        {
+          "id": "q5_2",
+          "type": "text",
+          "content": "第一泛音 (一端固定)",
+          "correctAnswer": "Img_FO_2"
+        },
+        {
+          "id": "q5_3",
+          "type": "text",
+          "content": "第二泛音 (一端固定)",
+          "correctAnswer": "Img_FO_3"
+        },
+        {
+          "id": "q5_4",
+          "type": "text",
+          "content": "第三泛音 (一端固定)",
+          "correctAnswer": "Img_FO_4"
+        },
+        {
+          "id": "q5_5",
+          "type": "text",
+          "content": "第一諧音 (一端固定)",
+          "correctAnswer": "Img_FO_1"
+        },
+        {
+          "id": "q5_6",
+          "type": "text",
+          "content": "第三諧音 (一端固定)",
+          "correctAnswer": "Img_FO_2"
+        },
+        {
+          "id": "q5_7",
+          "type": "text",
+          "content": "第五諧音 (一端固定)",
+          "correctAnswer": "Img_FO_3"
+        },
+        {
+          "id": "q5_8",
+          "type": "text",
+          "content": "第七諧音 (一端固定)",
+          "correctAnswer": "Img_FO_4"
+        }
+      ]
+    },
+    "level6": {
+      "name": "混合題目（看字選圖）",
+      "answerPoolIds": ["images_fixed_both", "images_fixed_one"],
+      "questions": [
+        {
+          "id": "q6_1",
+          "type": "text",
+          "content": "基音 (兩端固定)",
+          "correctAnswer": "Img_FF_1",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_2",
+          "type": "text",
+          "content": "第一泛音 (兩端固定)",
+          "correctAnswer": "Img_FF_2",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_3",
+          "type": "text",
+          "content": "第二泛音 (兩端固定)",
+          "correctAnswer": "Img_FF_3",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_4",
+          "type": "text",
+          "content": "第三泛音 (兩端固定)",
+          "correctAnswer": "Img_FF_4",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_5",
+          "type": "text",
+          "content": "第一諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_1",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_6",
+          "type": "text",
+          "content": "第二諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_2",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_7",
+          "type": "text",
+          "content": "第三諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_3",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_8",
+          "type": "text",
+          "content": "第四諧音 (兩端固定)",
+          "correctAnswer": "Img_FF_4",
+          "answerPoolIds": ["images_fixed_both"]
+        },
+        {
+          "id": "q6_9",
+          "type": "text",
+          "content": "基音 (一端固定)",
+          "correctAnswer": "Img_FO_1",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_10",
+          "type": "text",
+          "content": "第一泛音 (一端固定)",
+          "correctAnswer": "Img_FO_2",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_11",
+          "type": "text",
+          "content": "第二泛音 (一端固定)",
+          "correctAnswer": "Img_FO_3",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_12",
+          "type": "text",
+          "content": "第三泛音 (一端固定)",
+          "correctAnswer": "Img_FO_4",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_13",
+          "type": "text",
+          "content": "第一諧音 (一端固定)",
+          "correctAnswer": "Img_FO_1",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_14",
+          "type": "text",
+          "content": "第三諧音 (一端固定)",
+          "correctAnswer": "Img_FO_2",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_15",
+          "type": "text",
+          "content": "第五諧音 (一端固定)",
+          "correctAnswer": "Img_FO_3",
+          "answerPoolIds": ["images_fixed_one"]
+        },
+        {
+          "id": "q6_16",
+          "type": "text",
+          "content": "第七諧音 (一端固定)",
+          "correctAnswer": "Img_FO_4",
+          "answerPoolIds": ["images_fixed_one"]
+        }
+      ]
+    }
+  },
+  "referenceTable": [
+    {
+      "type": "header",
+      "title": "兩端固定"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_1.png",
+      "value": "n=1",
+      "overtone": "基音",
+      "harmonic": "第一諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_2.png",
+      "value": "n=2",
+      "overtone": "第一泛音",
+      "harmonic": "第二諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_3.png",
+      "value": "n=3",
+      "overtone": "第二泛音",
+      "harmonic": "第三諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/ff_4.png",
+      "value": "n=4",
+      "overtone": "第三泛音",
+      "harmonic": "第四諧音"
+    },
+    {
+      "type": "header",
+      "title": "一端固定"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_1.png",
+      "value": "m=1",
+      "overtone": "基音",
+      "harmonic": "第一諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_2.png",
+      "value": "m=3",
+      "overtone": "第一泛音",
+      "harmonic": "第三諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_3.png",
+      "value": "m=5",
+      "overtone": "第二泛音",
+      "harmonic": "第五諧音"
+    },
+    {
+      "type": "row",
+      "image": "assets/images/fo_4.png",
+      "value": "m=7",
+      "overtone": "第三泛音",
+      "harmonic": "第七諧音"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "id": "wave-harmonics",
+    "name": "駐波調和大師",
+    "version": "2.3",
+    "description": "學習駐波的泛音與諧音對應關係"
+  },
+  "messages": {
+    "win": [
+      "你是駐波大師",
+      "諧音泛音如數家珍",
+      "不是泛泛之輩卻是泛音小天才",
+      "諧音耿大師"
+    ],
+    "lose": [
+      "老師在講你有在聽嗎~",
+      "是不是該看點書了",
+      "失敗為成功之母，再來一次！",
+      "差一點點就開竅了！",
+      "加油，物理之神在等你覺醒"
+    ],
+    "draw": [
+      "那還不再一局?",
+      "還是見好就收!"
+    ],
+    "penalty": {
+      "text": "破音啦",
+      "threshold": 2,
+      "scoreDeduction": -2
+    },
+    "warning": {
+      "text": "最後 5 秒!",
+      "triggerTime": 5
+    },
+    "combo": {
+      "text": "COMBO",
+      "minCount": 2
+    },
+    "waiting": {
+      "p1": "動作真快!等待對手...",
+      "p2": "動作真快!等待對手..."
+    }
+  },
+  "layout": {
+    "optionGrid": {
+      "practice": "2x2",
+      "versus": "2x2",
+      "speed": "2x2"
+    },
+    "questionPosition": "top",
+    "p1Rotate": true,
+    "fontSize": {
+      "question": "1.8rem",
+      "option": "1.6rem",
+      "score": "1.4rem",
+      "combo": "1rem"
+    },
+    "spacing": {
+      "questionMarginBottom": "15px",
+      "optionGap": "10px",
+      "optionMinHeight": "70px"
+    }
+  },
+  "colors": {
+    "player1": "#FF6B6B",
+    "player2": "#4ECDC4",
+    "background": "#f7f9fc",
+    "correct": "#2ecc71",
+    "wrong": "#e74c3c",
+    "warning": "#f39c12",
+    "combo": "#f39c12",
+    "timeBar": "#e74c3c",
+    "divider": "#bdc3c7"
+  },
+  "cssVariables": {
+    "--p1-color": "#FF6B6B",
+    "--p2-color": "#4ECDC4",
+    "--bg-color": "#f7f9fc",
+    "--correct-color": "#2ecc71",
+    "--wrong-color": "#e74c3c",
+    "--option-border-radius": "12px",
+    "--option-min-height": "70px"
+  },
+  "animations": {
+    "correctDuration": "0.5s",
+    "wrongDuration": "0.4s",
+    "comboDuration": "0.3s",
+    "floatScoreDuration": "1s"
+  },
+  "features": {
+    "combo": true,
+    "penaltyMultiplier": true,
+    "wrongQueueReplay": true,
+    "timeWarning": true,
+    "soundEffects": true,
+    "countdownBeforeStart": true,
+    "referenceTable": true
+  }
+}

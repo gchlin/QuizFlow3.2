@@ -1,0 +1,80 @@
+{
+  "game": {
+    "name": "駐波調和大師",
+    "version": "2.3",
+    "author": "Chaher@dysh.tyc.edu.tw"
+  },
+  "modes": {
+    "practice": {
+      "enabled": true,
+      "name": "自己練習",
+      "targetScore": 0,
+      "showCombo": true,
+      "wrongQueueReplay": true
+    },
+    "versus": {
+      "enabled": true,
+      "name": "雙人搶答",
+      "targetScore": 20,
+      "showCombo": true,
+      "firstBonus": 2,
+      "secondBonus": 1
+    },
+    "speed": {
+      "enabled": true,
+      "name": "雙人競速",
+      "timeLimit": 30,
+      "showCombo": true,
+      "showTimeBar": true,
+      "warningTime": 5
+    }
+  },
+  "levels": [
+    {
+      "id": "level1",
+      "name": "🔵 兩端固定",
+      "category": "Part 1: 看圖選字",
+      "questionSet": "level1",
+      "modes": ["practice", "versus"]
+    },
+    {
+      "id": "level2",
+      "name": "🔵 一端固定一端自由",
+      "category": "Part 1: 看圖選字",
+      "questionSet": "level2",
+      "modes": ["practice", "versus"]
+    },
+    {
+      "id": "level3",
+      "name": "🔵 混合題目",
+      "category": "Part 1: 看圖選字",
+      "questionSet": "level3",
+      "modes": ["practice", "versus", "speed"]
+    },
+    {
+      "id": "level4",
+      "name": "🟢 兩端固定",
+      "category": "Part 2: 看字選圖",
+      "questionSet": "level4",
+      "modes": ["practice", "versus"]
+    },
+    {
+      "id": "level5",
+      "name": "🟢 一端固定一端自由",
+      "category": "Part 2: 看字選圖",
+      "questionSet": "level5",
+      "modes": ["practice", "versus"]
+    },
+    {
+      "id": "level6",
+      "name": "🟢 混合題目",
+      "category": "Part 2: 看字選圖",
+      "questionSet": "level6",
+      "modes": ["practice", "versus", "speed"]
+    }
+  ],
+  "rules": {
+    "description": "V2.3 更新：雙向時間條、最後倒數音效\n搶答規則：先答對+2，後答對+1\n連續答錯將觸發「破音」懲罰 (-2分)",
+    "showReferenceTable": true
+  }
+}

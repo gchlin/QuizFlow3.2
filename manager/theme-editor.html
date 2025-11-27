@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主題編輯器</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .color-picker-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .color-input {
+            width: 60px;
+            height: 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .color-preview {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .message-list {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+        }
+
+        .message-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .message-item input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 15px;
+            font-size: 0.9rem;
+        }
+
+        .preview-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .preview-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .preview-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 60px;
+            text-align: center;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 主題編輯器</h1>
+        <p class="subtitle">圖形化編輯 theme.json，無需寫程式</p>
+
+        <div class="alert alert-info">
+            <strong>💡 提示：</strong> 修改設定後，可即時預覽效果。完成後點擊「匯出 JSON」即可下載 theme.json 檔案。
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <button class="btn btn-primary" onclick="document.getElementById('loadFile').click()">
+                📂 載入現有 theme.json
+            </button>
+            <button class="btn btn-success" onclick="exportTheme()">
+                💾 匯出 theme.json
+            </button>
+            <button class="btn btn-danger" onclick="resetTheme()">
+                🔄 重置為預設值
+            </button>
+            <input type="file" id="loadFile" accept=".json" style="display: none;">
+        </div>
+
+        <!-- 顏色配置 -->
+        <div class="section">
+            <div class="section-title">🎨 顏色配置</div>
+            
+            <div class="form-group">
+                <label class="form-label">玩家 1 顏色</label>
+                <div class="color-picker-group">
+                    <input type="color" id="colorPlayer1" class="color-input" value="#FF6B6B">
+                    <div class="color-preview" id="previewPlayer1">Player 1</div>
+                    <input type="text" id="colorPlayer1Text" class="form-input" value="#FF6B6B" style="width: 100px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">玩家 2 顏色</label>
+                <div class="color-picker-group">
+                    <input type="color" id="colorPlayer2" class="color-input" value="#4ECDC4">
+                    <div class="color-preview" id="previewPlayer2">Player 2</div>
+                    <input type="text" id="colorPlayer2Text" class="form-input" value="#4ECDC4" style="width: 100px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">成功顏色</label>
+                <div class="color-picker-group">
+                    <input type="color" id="colorSuccess" class="color-input" value="#2ecc71">
+                    <div class="color-preview" id="previewSuccess">正確 ✓</div>
+                    <input type="text" id="colorSuccessText" class="form-input" value="#2ecc71" style="width: 100px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">錯誤顏色</label>
+                <div class="color-picker-group">
+                    <input type="color" id="colorDanger" class="color-input" value="#e74c3c">
+                    <div class="color-preview" id="previewDanger">錯誤 ✗</div>
+                    <input type="text" id="colorDangerText" class="form-input" value="#e74c3c" style="width: 100px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">主要顏色</label>
+                <div class="color-picker-group">
+                    <input type="color" id="colorPrimary" class="color-input" value="#3498db">
+                    <div class="color-preview" id="previewPrimary">主要色</div>
+                    <input type="text" id="colorPrimaryText" class="form-input" value="#3498db" style="width: 100px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- 字體設定 -->
+        <div class="section">
+            <div class="section-title">📝 字體設定</div>
+            
+            <div class="form-group">
+                <label class="form-label">標題大小</label>
+                <div class="slider-group">
+                    <input type="range" id="fontTitle" class="slider" min="1" max="4" step="0.1" value="2">
+                    <span class="slider-value" id="fontTitleValue">2rem</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">題目大小</label>
+                <div class="slider-group">
+                    <input type="range" id="fontQuestion" class="slider" min="1" max="3" step="0.1" value="1.8">
+                    <span class="slider-value" id="fontQuestionValue">1.8rem</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">答案大小</label>
+                <div class="slider-group">
+                    <input type="range" id="fontAnswer" class="slider" min="0.8" max="2.5" step="0.1" value="1.6">
+                    <span class="slider-value" id="fontAnswerValue">1.6rem</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 遊戲訊息 -->
+        <div class="section">
+            <div class="section-title">💬 遊戲訊息</div>
+            
+            <div class="form-group">
+                <label class="form-label">勝利訊息</label>
+                <div class="message-list" id="winMessages"></div>
+                <button class="btn btn-primary btn-sm" onclick="addMessage('win')">➕ 新增勝利訊息</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">失敗訊息</label>
+                <div class="message-list" id="loseMessages"></div>
+                <button class="btn btn-primary btn-sm" onclick="addMessage('lose')">➕ 新增失敗訊息</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">平手訊息</label>
+                <div class="message-list" id="drawMessages"></div>
+                <button class="btn btn-primary btn-sm" onclick="addMessage('draw')">➕ 新增平手訊息</button>
+            </div>
+        </div>
+
+        <!-- 佈局設定 -->
+        <div class="section">
+            <div class="section-title">📐 佈局設定</div>
+            
+            <div class="form-group">
+                <label class="form-label">題目圖片最大高度</label>
+                <div class="slider-group">
+                    <input type="range" id="imageHeight" class="slider" min="150" max="400" step="10" value="250">
+                    <span class="slider-value" id="imageHeightValue">250px</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">選項最小高度</label>
+                <div class="slider-group">
+                    <input type="range" id="optionHeight" class="slider" min="50" max="120" step="5" value="70">
+                    <span class="slider-value" id="optionHeightValue">70px</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">圓角大小</label>
+                <div class="slider-group">
+                    <input type="range" id="borderRadius" class="slider" min="0" max="30" step="1" value="12">
+                    <span class="slider-value" id="borderRadiusValue">12px</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 預覽 -->
+        <div class="preview-section">
+            <div class="preview-title">🔍 即時預覽</div>
+            
+            <div class="preview-box" id="previewBox1" style="background: #FF6B6B;">
+                玩家 1 區域
+            </div>
+
+            <div class="preview-box" id="previewBox2" style="background: #4ECDC4;">
+                玩家 2 區域
+            </div>
+
+            <div class="preview-box" id="previewBox3" style="background: #2ecc71; color: white;">
+                答對效果 ✓
+            </div>
+
+            <div id="messagePreview" style="padding: 15px; background: white; border-radius: 8px; margin-top: 15px;">
+                <strong>訊息預覽：</strong>
+                <div id="messagePreviewContent" style="margin-top: 10px; font-style: italic; color: #555;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let themeData = {
+            colors: {
+                primary: "#3498db",
+                secondary: "#e74c3c",
+                success: "#2ecc71",
+                danger: "#e74c3c",
+                warning: "#f39c12",
+                player1: "#FF6B6B",
+                player2: "#4ECDC4",
+                background: "#f7f9fc",
+                menuBackground: "#ffffff",
+                dividerBackground: "#ecf0f1"
+            },
+            typography: {
+                fontFamily: "'Segoe UI', sans-serif",
+                titleFontSize: "2rem",
+                questionFontSize: "1.8rem",
+                answerFontSize: "1.6rem",
+                menuFontSize: "1.1rem",
+                scoreFontSize: "1.4rem"
+            },
+            layout: {
+                questionImageMaxHeight: "250px",
+                optionImageMaxHeight: "160px",
+                optionGridColumns: 2,
+                optionMinHeight: "70px",
+                optionGap: "10px",
+                borderRadius: "12px"
+            },
+            messages: {
+                win: [
+                    "你是駐波大師",
+                    "諧音泛音如數家珍",
+                    "不是泛泛之輩卻是泛音小天才",
+                    "諧音耿大師"
+                ],
+                lose: [
+                    "老師在講你有在聽嗎~",
+                    "是不是該看點書了",
+                    "失敗為成功之母，再來一次！",
+                    "差一點點就開竅了！",
+                    "加油，物理之神在等你覺醒"
+                ],
+                draw: [
+                    "那還不再一局?",
+                    "還是見好就收!"
+                ],
+                feedback: {
+                    correct: "✓",
+                    wrong: "✗",
+                    waiting: "動作真快!等待對手...",
+                    combo: "COMBO x{count}",
+                    brokenVoice: "破音啦"
+                }
+            }
+        };
+
+        // 初始化
+        function init() {
+            setupColorPickers();
+            setupSliders();
+            renderMessages('win');
+            renderMessages('lose');
+            renderMessages('draw');
+            updateAllPreviews();
+            
+            document.getElementById('loadFile').addEventListener('change', loadThemeFile);
+        }
+
+        function setupColorPickers() {
+            const colors = [
+                { id: 'Player1', key: 'player1' },
+                { id: 'Player2', key: 'player2' },
+                { id: 'Success', key: 'success' },
+                { id: 'Danger', key: 'danger' },
+                { id: 'Primary', key: 'primary' }
+            ];
+
+            colors.forEach(({ id, key }) => {
+                const picker = document.getElementById(`color${id}`);
+                const text = document.getElementById(`color${id}Text`);
+                const preview = document.getElementById(`preview${id}`);
+
+                picker.addEventListener('input', (e) => {
+                    const color = e.target.value;
+                    text.value = color;
+                    preview.style.background = color;
+                    themeData.colors[key] = color;
+                    updateAllPreviews();
+                });
+
+                text.addEventListener('input', (e) => {
+                    const color = e.target.value;
+                    if (/^#[0-9A-F]{6}$/i.test(color)) {
+                        picker.value = color;
+                        preview.style.background = color;
+                        themeData.colors[key] = color;
+                        updateAllPreviews();
+                    }
+                });
+            });
+        }
+
+        function setupSliders() {
+            const sliders = [
+                { id: 'fontTitle', key: 'titleFontSize', unit: 'rem' },
+                { id: 'fontQuestion', key: 'questionFontSize', unit: 'rem' },
+                { id: 'fontAnswer', key: 'answerFontSize', unit: 'rem' },
+                { id: 'imageHeight', key: 'questionImageMaxHeight', unit: 'px' },
+                { id: 'optionHeight', key: 'optionMinHeight', unit: 'px' },
+                { id: 'borderRadius', key: 'borderRadius', unit: 'px' }
+            ];
+
+            sliders.forEach(({ id, key, unit }) => {
+                const slider = document.getElementById(id);
+                const valueDisplay = document.getElementById(`${id}Value`);
+
+                slider.addEventListener('input', (e) => {
+                    const value = e.target.value + unit;
+                    valueDisplay.textContent = value;
+                    
+                    if (unit === 'rem') {
+                        themeData.typography[key] = value;
+                    } else {
+                        themeData.layout[key] = value;
+                    }
+                    
+                    updateAllPreviews();
+                });
+            });
+        }
+
+        function renderMessages(type) {
+            const container = document.getElementById(`${type}Messages`);
+            container.innerHTML = '';
+            
+            themeData.messages[type].forEach((msg, idx) => {
+                const div = document.createElement('div');
+                div.className = 'message-item';
+                div.innerHTML = `
+                    <input type="text" value="${msg}" onchange="updateMessage('${type}', ${idx}, this.value)">
+                    <button class="btn btn-danger btn-sm" onclick="removeMessage('${type}', ${idx})">刪除</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addMessage(type) {
+            themeData.messages[type].push('新訊息');
+            renderMessages(type);
+        }
+
+        function removeMessage(type, idx) {
+            themeData.messages[type].splice(idx, 1);
+            renderMessages(type);
+        }
+
+        function updateMessage(type, idx, value) {
+            themeData.messages[type][idx] = value;
+            updateAllPreviews();
+        }
+
+        function updateAllPreviews() {
+            // 更新顏色預覽
+            document.getElementById('previewBox1').style.background = themeData.colors.player1;
+            document.getElementById('previewBox2').style.background = themeData.colors.player2;
+            document.getElementById('previewBox3').style.background = themeData.colors.success;
+
+            // 更新訊息預覽
+            const previewContent = document.getElementById('messagePreviewContent');
+            previewContent.innerHTML = `
+                <div style="margin: 5px 0; color: #2ecc71;">✅ 勝利: ${themeData.messages.win[0]}</div>
+                <div style="margin: 5px 0; color: #e74c3c;">❌ 失敗: ${themeData.messages.lose[0]}</div>
+                <div style="margin: 5px 0; color: #f39c12;">➖ 平手: ${themeData.messages.draw[0]}</div>
+            `;
+        }
+
+        function exportTheme() {
+            const dataStr = JSON.stringify(themeData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'theme.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ theme.json 已匯出！');
+        }
+
+        function loadThemeFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loaded = JSON.parse(e.target.result);
+                    themeData = loaded;
+                    
+                    // 更新所有控制項
+                    document.getElementById('colorPlayer1').value = themeData.colors.player1;
+                    document.getElementById('colorPlayer1Text').value = themeData.colors.player1;
+                    document.getElementById('colorPlayer2').value = themeData.colors.player2;
+                    document.getElementById('colorPlayer2Text').value = themeData.colors.player2;
+                    document.getElementById('colorSuccess').value = themeData.colors.success;
+                    document.getElementById('colorSuccessText').value = themeData.colors.success;
+                    document.getElementById('colorDanger').value = themeData.colors.danger;
+                    document.getElementById('colorDangerText').value = themeData.colors.danger;
+                    document.getElementById('colorPrimary').value = themeData.colors.primary;
+                    document.getElementById('colorPrimaryText').value = themeData.colors.primary;
+
+                    document.getElementById('fontTitle').value = parseFloat(themeData.typography.titleFontSize);
+                    document.getElementById('fontQuestion').value = parseFloat(themeData.typography.questionFontSize);
+                    document.getElementById('fontAnswer').value = parseFloat(themeData.typography.answerFontSize);
+                    
+                    document.getElementById('imageHeight').value = parseInt(themeData.layout.questionImageMaxHeight);
+                    document.getElementById('optionHeight').value = parseInt(themeData.layout.optionMinHeight);
+                    document.getElementById('borderRadius').value = parseInt(themeData.layout.borderRadius);
+
+                    renderMessages('win');
+                    renderMessages('lose');
+                    renderMessages('draw');
+                    updateAllPreviews();
+                    
+                    alert('✅ 主題已載入！');
+                } catch (err) {
+                    alert('❌ 載入失敗: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetTheme() {
+            if (confirm('確定要重置為預設值嗎？所有修改將遺失。')) {
+                location.reload();
+            }
+        }
+
+        // 頁面載入時初始化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

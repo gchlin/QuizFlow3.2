@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme V2 驗證工具</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 2px dashed #3498db;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background: #ecf0f1;
+            border-color: #2980b9;
+        }
+        .upload-area.dragover {
+            background: #d5e8f7;
+            border-color: #2980b9;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn-success {
+            background: #27ae60;
+        }
+        .btn-success:hover {
+            background: #229954;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .result.warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .info-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        .info-item strong {
+            display: block;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #95a5a6;
+        }
+        .checklist li.valid {
+            border-left-color: #27ae60;
+            background: #d4edda;
+        }
+        .checklist li.invalid {
+            border-left-color: #e74c3c;
+            background: #f8d7da;
+        }
+        .checklist li::before {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .checklist li.valid::before {
+            content: "✅";
+        }
+        .checklist li.invalid::before {
+            content: "❌";
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Theme V2.0 驗證工具</h1>
+    
+    <div class="section">
+        <h2>📤 上傳 Theme JSON</h2>
+        <div class="upload-area" id="uploadArea">
+            <p style="font-size: 18px; margin: 10px 0;">📁 拖曳文件到這裡</p>
+            <p style="color: #7f8c8d;">或</p>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">選擇文件</button>
+            <input type="file" id="fileInput" accept=".json" onchange="handleFile(this.files[0])">
+            <p style="font-size: 14px; color: #7f8c8d; margin-top: 15px;">
+                支援格式：theme.json, theme-v2.json, config.json, config-v2.json
+            </p>
+        </div>
+    </div>
+
+    <div id="resultSection" style="display: none;">
+        <div class="section">
+            <h2>📊 驗證結果</h2>
+            <div id="validationResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>📝 文件資訊</h2>
+            <div id="fileInfo"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 結構檢查</h2>
+            <ul class="checklist" id="structureCheck"></ul>
+        </div>
+
+        <div class="section">
+            <h2>💾 JSON 預覽</h2>
+            <pre class="code-block" id="jsonPreview"></pre>
+        </div>
+
+        <div class="section">
+            <h2>📥 下載</h2>
+            <button class="btn btn-success" onclick="downloadJSON()">💾 下載格式化的 JSON</button>
+            <button class="btn" onclick="location.reload()">🔄 重新開始</button>
+        </div>
+    </div>
+
+    <script>
+        let currentJSON = null;
+        let currentFilename = '';
+
+        // 拖曳上傳
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        // 處理文件
+        function handleFile(file) {
+            if (!file) return;
+            
+            currentFilename = file.name;
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    currentJSON = JSON.parse(content);
+                    validateJSON(currentJSON, file.name);
+                } catch (error) {
+                    showError('JSON 格式錯誤：' + error.message);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // 驗證 JSON
+        function validateJSON(data, filename) {
+            document.getElementById('resultSection').style.display = 'block';
+            
+            let isValid = true;
+            let errors = [];
+            let warnings = [];
+            let fileType = 'unknown';
+
+            // 判斷文件類型
+            if (data.meta && data.messages && data.layout && data.colors) {
+                fileType = 'theme-v2';
+            } else if (data.game && data.modes && data.levels) {
+                fileType = 'config-v2';
+            } else if (data.title && data.colors) {
+                fileType = 'theme-v1';
+            } else if (data.description && data.practiceBtn) {
+                fileType = 'config-v1';
+            }
+
+            // 顯示文件資訊
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>文件名稱</strong>
+                        ${filename}
+                    </div>
+                    <div class="info-item">
+                        <strong>文件類型</strong>
+                        ${getFileTypeName(fileType)}
+                    </div>
+                    <div class="info-item">
+                        <strong>文件大小</strong>
+                        ${(JSON.stringify(data).length / 1024).toFixed(2)} KB
+                    </div>
+                    <div class="info-item">
+                        <strong>格式版本</strong>
+                        ${fileType.includes('v2') ? 'V2.0 (新版)' : fileType.includes('v1') ? 'V1.0 (舊版)' : '未知'}
+                    </div>
+                </div>
+            `;
+
+            // 結構檢查
+            const checks = [];
+            
+            if (fileType === 'theme-v2') {
+                checks.push({ name: 'meta 資訊', valid: !!data.meta, required: true });
+                checks.push({ name: 'messages 訊息', valid: !!data.messages, required: true });
+                checks.push({ name: 'layout 排版', valid: !!data.layout, required: true });
+                checks.push({ name: 'colors 顏色', valid: !!data.colors, required: true });
+                checks.push({ name: 'cssVariables CSS變數', valid: !!data.cssVariables, required: false });
+                checks.push({ name: 'features 功能', valid: !!data.features, required: false });
+                
+                // 細節檢查
+                if (data.messages) {
+                    checks.push({ name: 'messages.penalty', valid: !!data.messages.penalty, required: true });
+                    checks.push({ name: 'messages.combo', valid: !!data.messages.combo, required: true });
+                    checks.push({ name: 'messages.win', valid: Array.isArray(data.messages.win), required: true });
+                }
+                
+                if (data.layout) {
+                    checks.push({ name: 'layout.optionGrid', valid: !!data.layout.optionGrid, required: true });
+                }
+
+            } else if (fileType === 'config-v2') {
+                checks.push({ name: 'game 遊戲資訊', valid: !!data.game, required: true });
+                checks.push({ name: 'modes 遊戲模式', valid: !!data.modes, required: true });
+                checks.push({ name: 'levels 關卡設定', valid: Array.isArray(data.levels), required: true });
+                
+                if (data.levels) {
+                    checks.push({ name: `關卡數量 (${data.levels.length})`, valid: data.levels.length > 0, required: true });
+                }
+
+            } else if (fileType === 'theme-v1') {
+                warnings.push('這是舊版 (V1.0) theme.json，建議升級到 V2.0 格式');
+            } else if (fileType === 'config-v1') {
+                warnings.push('這是舊版 (V1.0) config.json，建議升級到 V2.0 格式');
+            } else {
+                errors.push('無法識別的 JSON 格式');
+                isValid = false;
+            }
+
+            // 顯示結構檢查
+            const structureCheck = document.getElementById('structureCheck');
+            structureCheck.innerHTML = checks.map(check => {
+                const status = check.valid ? 'valid' : (check.required ? 'invalid' : 'valid');
+                const text = check.required ? (check.valid ? '必要欄位' : '缺少必要欄位') : '可選欄位';
+                return `<li class="${status}">${check.name} - ${text}</li>`;
+            }).join('');
+
+            // 檢查必要欄位
+            checks.forEach(check => {
+                if (check.required && !check.valid) {
+                    errors.push(`缺少必要欄位: ${check.name}`);
+                    isValid = false;
+                }
+            });
+
+            // 顯示驗證結果
+            const resultDiv = document.getElementById('validationResult');
+            if (isValid && errors.length === 0) {
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h3>✅ 驗證通過！</h3>
+                    <p>這是一個有效的 ${getFileTypeName(fileType)}</p>
+                    ${warnings.length > 0 ? `<p><strong>提醒：</strong><br>${warnings.join('<br>')}</p>` : ''}
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h3>❌ 驗證失敗</h3>
+                    <p><strong>錯誤：</strong></p>
+                    <ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul>
+                    ${warnings.length > 0 ? `<p><strong>警告：</strong><br>${warnings.join('<br>')}</p>` : ''}
+                `;
+            }
+
+            // 顯示 JSON 預覽
+            document.getElementById('jsonPreview').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function getFileTypeName(type) {
+            const names = {
+                'theme-v2': 'Theme V2.0 (主題設定 - 新版)',
+                'config-v2': 'Config V2.0 (遊戲配置 - 新版)',
+                'theme-v1': 'Theme V1.0 (主題設定 - 舊版)',
+                'config-v1': 'Config V1.0 (遊戲配置 - 舊版)',
+                'unknown': '未知格式'
+            };
+            return names[type] || '未知';
+        }
+
+        function showError(message) {
+            document.getElementById('resultSection').style.display = 'block';
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.className = 'result error';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<h3>❌ 錯誤</h3><p>${message}</p>`;
+        }
+
+        function downloadJSON() {
+            if (!currentJSON) return;
+            
+            const formatted = JSON.stringify(currentJSON, null, 2);
+            const blob = new Blob([formatted], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFilename || 'theme-v2.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
