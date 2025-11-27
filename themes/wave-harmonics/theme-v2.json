@@ -1,4 +1,12 @@
 {
+
+"metadata": {
+  "name": "Standing Wave Harmonics",
+  "version": "2.0",
+  "author": "DYSH",
+  "description": "駐波泛音遊戲主題"
+},
+
   "meta": {
     "id": "wave-harmonics",
     "name": "駐波調和大師",
